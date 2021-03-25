@@ -9,7 +9,6 @@ import org.lsmr.selfcheckout.devices.listeners.ElectronicScaleListener;
 
 
 public class BagItem extends UseCases {
-
 	Item item;
 	double currentWeightInGrams;
 	int weightLimitInGrams;
@@ -38,7 +37,6 @@ public class BagItem extends UseCases {
 			@Override
 			public void weightChanged(ElectronicScale scale, double weightInGrams) 
 			{	
-				
 				double currentWeight = getCurrentWeight();
 				double newWeight = getBaggingAreaWeight(); 
 				
@@ -46,8 +44,12 @@ public class BagItem extends UseCases {
 				if (newWeight > currentWeight) {
 		        	station.mainScanner.disable();
 					station.handheldScanner.disable();
+					setItemBagged(true);
 		        }
-		        	        
+				
+				else {
+					setItemBagged(false);
+				}
 			}
 
 			@Override
@@ -71,10 +73,8 @@ public class BagItem extends UseCases {
      * Post-Condition: completed updating the bagging area scale for all items
      * @param item: Item to be placed in bagging area
      */
-	
 	public void bagItem (Item item) {
-        setCurrentItem(item);
-        setPuttingItemInBag(true);
+        setCurrentItem(item);			// not needed atm, but is here for use in future iterations
         station.baggingArea.add(item);
     }
 	
@@ -84,10 +84,8 @@ public class BagItem extends UseCases {
      * Post-Condition: completed updating the bagging area scale for all items
      * @param item: Item to be removed from the bagging
      */
-	public void removingBaggedItem (Item item) 
-	{       
-        setCurrentItem(item);
-        setPuttingItemInBag(false);
+	public void removingBaggedItem (Item item) {       
+        setCurrentItem(item);			// not needed atm, but is here for use in future iterations
         station.baggingArea.remove(item);
     }
 	
