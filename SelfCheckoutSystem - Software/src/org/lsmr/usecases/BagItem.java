@@ -18,48 +18,39 @@ public class BagItem extends UseCases {
 	public BarcodeScannerListener barcodeScannerListener;
 
 	// Register the listeners in this constructor
-	//constructor
+	// Constructor
 		
 	public BagItem() {
 		scaleElectronicListener =  new ElectronicScaleListener() {
 			@Override
 			public void enabled(AbstractDevice<? extends AbstractDeviceListener> device) {
 				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
 			public void disabled(AbstractDevice<? extends AbstractDeviceListener> device) {
 				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
-			public void weightChanged(ElectronicScale scale, double weightInGrams) 
-			{	
+			public void weightChanged(ElectronicScale scale, double weightInGrams) {	
 				double currentWeight = getCurrentWeight();
 				double newWeight = getBaggingAreaWeight(); 
 				
-				
+				// The main and handheld scanners will only be enabled if the item was properly bagged (if the weight on the scale increases above the current weight).
 				if (newWeight > currentWeight) {
-		        	station.mainScanner.disable();
-					station.handheldScanner.disable();
+		        	station.mainScanner.enable();
+					station.handheldScanner.enable();
 					setItemBagged(true);
 		        }
-				
-				else {
-					setItemBagged(false);
-				}
 			}
 
 			@Override
-			public void overload(ElectronicScale scale)  
-			{										
+			public void overload(ElectronicScale scale)  {										
 			}
 
 			@Override
-			public void outOfOverload(ElectronicScale scale) 
-			{
+			public void outOfOverload(ElectronicScale scale) {
 			}
 			
 		};
@@ -94,9 +85,7 @@ public class BagItem extends UseCases {
      * Pre-Condition: the item has been scanned and bagged 
      * Post-Condition: checked and completed updating the weight of the baggage for all items
      */
-	
-	public boolean correctBaggageWeight() 
-	{
+	public boolean correctBaggageWeight() {
 		//declaring variables 	
         double weight = getCurrentWeight();
         double baggingWeight = getBaggingAreaWeight();
