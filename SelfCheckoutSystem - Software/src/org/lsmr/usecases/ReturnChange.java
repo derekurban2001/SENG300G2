@@ -2,6 +2,7 @@ package org.lsmr.usecases;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -55,6 +56,9 @@ public class ReturnChange {
 	}
 	
 	public void calculateChange(double changeTotal) throws OverloadException{
+		if(changeTotal < 0)
+			throw new SimulationException("Can't calculate change with a negative number");
+		
 		double total = changeTotal;
 		coinsToReturn.clear();
 		banknotesToReturn.clear();
@@ -68,23 +72,21 @@ public class ReturnChange {
 				}
 				banknoteCount--;
 				
-				total = BigDecimal.valueOf(total).subtract(BigDecimal.valueOf(denomination*banknoteCount)).doubleValue();
+				total = round(total - denomination*banknoteCount, 2);
 			}
 		}
 		
 		for(BigDecimal denomination : coinDenominations) {
-			double value = denomination.doubleValue();
+			double value = round(denomination.doubleValue(), 2);
 			
-			if(total - value >= 0 && coinDispensers.get(denomination).size() > 0) {
+			if(round(total - value, 2) >= 0 && coinDispensers.get(denomination).size() > 0) {
 				double coinCount = 1;
-				while(total - value*coinCount >= 0 && coinDispensers.get(denomination).size() >= coinCount) {
+				while(round(total - value*coinCount, 2) >= 0 && coinDispensers.get(denomination).size() >= coinCount) {
 					coinsToReturn.add(denomination);
 					coinCount++;
 				}
 				coinCount--;
-				
-				
-				total = BigDecimal.valueOf(total).subtract(BigDecimal.valueOf(value*coinCount)).doubleValue();
+				total = round(total - value*coinCount, 2);
 			}
 		}
 		
@@ -109,7 +111,9 @@ public class ReturnChange {
 				catch(EmptyException ex) {/*Shouldn't happen*/}
 			}
 		}
-		banknotesToReturn.removeAll(toRemove);
+		
+		for(Integer banknote : toRemove)
+			banknotesToReturn.remove(banknote);
 	}
 	
 	public void releaseCoinChange() throws DisabledException{
@@ -127,7 +131,8 @@ public class ReturnChange {
 				catch(EmptyException ex) {/*Shouldn't happen*/}
 			}
 		}
-		coinsToReturn.removeAll(toRemove);
+		for(BigDecimal coin : toRemove)
+			coinsToReturn.remove(coin);
 	}
 	
 	public Banknote takeBanknote() {
@@ -140,18 +145,25 @@ public class ReturnChange {
 	public List<Coin> takeCoins() {
 		List<Coin> coins = station.coinTray.collectCoins();
 		
+		ArrayList<Coin> fillList = new ArrayList<Coin>();
+		
 		for(Coin coin : coins) {
 			if(coin != null) {
+				fillList.add(coin);
 				System.out.println("Taking $"+coin.getValue()+" Coin from coin tray...");
 				coinPause = false;
 			}
 		}
 			
-		return coins;
+		return fillList;
 	}
 	
-	public int changePending() {
+	public int pendingChange() {
 		return coinsToReturn.size() + banknotesToReturn.size();
+	}
+	
+	private double round(double value, int places) {
+		return BigDecimal.valueOf(value).setScale(places, RoundingMode.HALF_UP).doubleValue();
 	}
 	
 	private void printChange(ArrayList<Integer> banknotesToReturn, ArrayList<BigDecimal> coinsToReturn) {
