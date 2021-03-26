@@ -4,11 +4,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Locale;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.lsmr.selfcheckout.Card;
@@ -22,6 +28,8 @@ import org.lsmr.usecases.CustomerMembership;
 public class CustomerMembershipTest {
 
 	private SelfCheckoutStation station;
+	private static PrintStream standardOut = System.out;
+	private static InputStream standardIn = System.in;
 	
 	@Before
 	public void setup() {
@@ -161,9 +169,44 @@ public class CustomerMembershipTest {
 		assertEquals(false, membership.isCardInserted());
 	}
 	
+	@Test
 	public void enterMemberNumTest() {
-		Card memberCard = new Card(null, null, null, null, null, false, false);
+		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+		ByteArrayInputStream inStream = new ByteArrayInputStream("1234".getBytes());
+		streamSetup(outStream, inStream);
+		System.setOut(new PrintStream(outStream));
+		System.setIn(inStream);
+		
+		
+		Card memberCard = new Card("Membership", "1234", "John Doe", "123", "1234", false, false);
 		CustomerMembership membership = new CustomerMembership(station, memberCard);
 		membership.enterMemberNum();
+		assertEquals("Please input membership number:", outStream.toString());
+		streamTeardown();
+	}
+	
+	@Test
+	public void enterMemberNumTestTwo() {
+		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+		ByteArrayInputStream inStream = new ByteArrayInputStream("".getBytes());
+		streamSetup(outStream, inStream);
+		
+		Card memberCard = new Card("Membership", "1234", "John Doe", "123", "1234", false, false);
+		CustomerMembership membership = new CustomerMembership(station, memberCard);
+		membership.enterMemberNum();
+		assertEquals("That is not a valid membership number.", outStream.toString());
+		streamTeardown();
+	}
+	
+	
+	public void streamSetup(ByteArrayOutputStream outStream, InputStream inStream) {
+		System.setOut(new PrintStream(outStream));
+		System.setIn(inStream);
+	}
+	
+	@After
+	public void streamTeardown() {
+		System.setOut(standardOut);
+		System.setIn(standardIn);
 	}
 }

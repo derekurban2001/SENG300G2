@@ -113,9 +113,9 @@ public class CustomerMembership{
 	}
 	
 	public void enterMemberNum() {
-		System.out.println("Please input membership number:");
-		if(sc.nextLine() == null) {
-			System.out.println("That is not a valid membership number");
+		System.out.print("Please input membership number:");
+		if(sc.nextLine() == "") {
+			System.out.println("That is not a valid membership number.");
 		}
 	}
 	
