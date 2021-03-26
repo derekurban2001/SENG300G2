@@ -19,7 +19,6 @@ public class BagItem extends UseCases {
 
 	// Register the listeners in this constructor
 	// Constructor
-		
 	public BagItem() {
 		scaleElectronicListener =  new ElectronicScaleListener() {
 			@Override
@@ -105,5 +104,4 @@ public class BagItem extends UseCases {
         return false;
 
     }
-	
 }
