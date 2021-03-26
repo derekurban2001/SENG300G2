@@ -1,4 +1,4 @@
-package org.lsmr.usecases;
+package org.lsmr.testcases;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -17,6 +17,7 @@ import org.lsmr.selfcheckout.ChipFailureException;
 import org.lsmr.selfcheckout.TapFailureException;
 import org.lsmr.selfcheckout.devices.SelfCheckoutStation;
 import org.lsmr.selfcheckout.devices.SimulationException;
+import org.lsmr.usecases.CustomerMembership;
 
 public class CustomerMembershipTest {
 
@@ -122,6 +123,7 @@ public class CustomerMembershipTest {
 	public void insertCardTest(){
 		Card memberCard = new Card("Membership", "1234", "John Doe", "123", "1234", false, true);
 		String pin = "1234";
+		CustomerMembership membership = new CustomerMembership(station, memberCard, pin);
 		try{
 			membership.insertMemberCard(memberCard, pin);
 		} catch(IOException e) {return;}
@@ -136,17 +138,32 @@ public class CustomerMembershipTest {
 		try{
 			membership.swipeMemberCard(memberCard, signature);
 		} catch(IOException e) {return;}
-		fail("BlockedCardException expected");
+	}
+	
+	
+	@Test
+	public void tapCardTest() {
+		Card memberCard = new Card("Membership", "1234", "John Doe", "123", "1234", true, false);
+		CustomerMembership membership = new CustomerMembership(station, memberCard);
+		try {
+			membership.tapMemberCard(memberCard);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	@Test
-	public void tapDisabledCardTest() {
+	public void removeTest() {
 		Card memberCard = new Card("Membership", "1234", "John Doe", "123", "1234", false, false);
 		CustomerMembership membership = new CustomerMembership(station, memberCard);
-		try{
-			membership.tapMemberCard(memberCard);
-		} catch(IOException e) {return;}
-		fail("TapFailureException expected");
+		membership.removeCard();
+		assertEquals(false, membership.isCardInserted());
 	}
 	
+	public void enterMemberNumTest() {
+		Card memberCard = new Card(null, null, null, null, null, false, false);
+		CustomerMembership membership = new CustomerMembership(station, memberCard);
+		membership.enterMemberNum();
+	}
 }
