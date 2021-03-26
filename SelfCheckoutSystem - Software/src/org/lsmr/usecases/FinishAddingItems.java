@@ -1,6 +1,7 @@
 package org.lsmr.usecases;
 
 import java.math.BigDecimal;
+
 import java.util.ArrayList;
 
 import org.lsmr.selfcheckout.Barcode;
@@ -56,6 +57,16 @@ public class FinishAddingItems extends UseCases{
 		 
 		 
 	}
+	public void populateDatabase(ArrayList<BarcodedProduct> list) {
+        if(list == null)
+            throw new SimulationException("Can't populate database with null list");
+
+        ProductDatabases.BARCODED_PRODUCT_DATABASE.clear();
+
+        for(BarcodedProduct product : list) {
+            ProductDatabases.BARCODED_PRODUCT_DATABASE.put(product.getBarcode(), product);
+        }
+    }
 	
 	/**
      * Converts a list of BarcodedItems into a list of BarcodedProducts based off the product database
