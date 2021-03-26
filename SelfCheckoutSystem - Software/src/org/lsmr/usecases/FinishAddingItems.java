@@ -57,48 +57,6 @@ public class FinishAddingItems extends UseCases{
 		 
 		 
 	}
-	public void populateDatabase(ArrayList<BarcodedProduct> list) {
-        if(list == null)
-            throw new SimulationException("Can't populate database with null list");
-
-        ProductDatabases.BARCODED_PRODUCT_DATABASE.clear();
-
-        for(BarcodedProduct product : list) {
-            ProductDatabases.BARCODED_PRODUCT_DATABASE.put(product.getBarcode(), product);
-        }
-    }
 	
-	/**
-     * Converts a list of BarcodedItems into a list of BarcodedProducts based off the product database
-     * 
-     * @param ArrayList<BarcodedItem> list
-     *             The list of items to be converted to products
-     * 
-     * @throws SimulationException
-     *             If the list provided is null
-     *             If the barcode found in an item isn't in the product database
-     *
-     */
-    public void convertItemToProduct(ArrayList<BarcodedItem> list) {
-        if(list == null)
-            throw new SimulationException("Can't convert null list");
-
-        ArrayList<BarcodedProduct> productList = new ArrayList<BarcodedProduct>();
-
-        for(BarcodedItem item : list) {
-            if(!ProductDatabases.BARCODED_PRODUCT_DATABASE.containsKey(item.getBarcode()))
-                throw new SimulationException("Item not in product database");
-
-            productList.add(ProductDatabases.BARCODED_PRODUCT_DATABASE.get(item.getBarcode()));
-        }
-
-        BigDecimal finalPrice = getFinal(productList);
-        
-        // call the parent payment class here
-        
-      
-       
-        
-    }
 	
 }
