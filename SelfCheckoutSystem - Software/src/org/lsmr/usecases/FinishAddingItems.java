@@ -10,6 +10,7 @@ import org.lsmr.selfcheckout.Item;
 import org.lsmr.selfcheckout.devices.AbstractDevice;
 import org.lsmr.selfcheckout.devices.BarcodeScanner;
 import org.lsmr.selfcheckout.devices.ElectronicScale;
+import org.lsmr.selfcheckout.devices.SelfCheckoutStation;
 import org.lsmr.selfcheckout.devices.SimulationException;
 import org.lsmr.selfcheckout.devices.listeners.AbstractDeviceListener;
 import org.lsmr.selfcheckout.devices.listeners.BarcodeScannerListener;
@@ -20,7 +21,8 @@ import org.lsmr.selfcheckout.products.BarcodedProduct;
 
 public class FinishAddingItems extends UseCases{
 	Item item;
-	
+	BarcodedProduct barcodedProduct;
+	BigDecimal itemPrice;
 	public ElectronicScaleListener scaleElectronicListener;
 	public BarcodeScannerListener barcodeScannerListener;
 	public TouchScreenListener touchScreenListener;
@@ -58,5 +60,14 @@ public class FinishAddingItems extends UseCases{
 		 
 	}
 	
-	
+
+	public void doneAddingItems(Barcode barcode) {
+		if (ProductDatabases.BARCODED_PRODUCT_DATABASE.containsKey(barcode))  {
+			barcodedProduct = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
+			itemPrice = barcodedProduct.getPrice();
+			
+			// call the parent payment class to pass the itemPrice 
+		}
+	}
 }
+
