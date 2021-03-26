@@ -20,10 +20,11 @@ public class CustomerMembership{
 	private SelfCheckoutStation station;
 	private String membershipID;
 	private Scanner sc = new Scanner(System.in);
+	public boolean cardInserted;
 	private CardData data;
 	
 	//constructor
-	CustomerMembership(SelfCheckoutStation station, Card memberCard){
+	public CustomerMembership(SelfCheckoutStation station, Card memberCard){
 		if(station == null) {
 			throw new SimulationException("Station is null");
 		}
@@ -35,7 +36,7 @@ public class CustomerMembership{
 		initListener();
 	}
 	
-	CustomerMembership(SelfCheckoutStation station, Card memberCard, String pin){
+	public CustomerMembership(SelfCheckoutStation station, Card memberCard, String pin){
 		if(station == null) {
 			throw new SimulationException("Station is null");
 		}
@@ -50,14 +51,6 @@ public class CustomerMembership{
 		initListener();
 	}
 	
-	public CardData getData() {
-		return data;
-	}
-
-	public void setData(CardData data) {
-		this.data = data;
-	}
-
 	private void initListener() {
 		station.cardReader.register(new CardReaderListener() {
 			public void enabled(AbstractDevice<? extends AbstractDeviceListener> device) {
@@ -120,9 +113,6 @@ public class CustomerMembership{
 	}
 	
 	public void enterMemberNum() {
-		if(data.getNumber() == null) {
-			enterMemberNum();
-		}
 		System.out.println("Please input membership number:");
 		if(sc.nextLine() == null) {
 			System.out.println("That is not a valid membership number");
@@ -131,7 +121,26 @@ public class CustomerMembership{
 	
 	public void removeCard() {
 		station.cardReader.remove();
+		setCardInserted(false);
 	}
+	
+	public boolean isCardInserted() {
+		return cardInserted;
+	}
+
+	public void setCardInserted(boolean cardInserted) {
+		this.cardInserted = cardInserted;
+	}
+
+	public CardData getData() {
+		return data;
+	}
+
+	public void setData(CardData data) {
+		this.data = data;
+	}
+
+
 	
 	
 }
