@@ -32,7 +32,6 @@ public class AddOwnBags extends UseCases {
 				if (newWeight > currentWeight) {
 		        	station.mainScanner.enable();
 					station.handheldScanner.enable();
-					setItemBagged(true);
 		        }
 			}
 
@@ -49,6 +48,6 @@ public class AddOwnBags extends UseCases {
 			}
 		};
 		
-		station.baggingArea.register(scaleElectronicListener);
+		station.baggingArea.register(electronicScaleListener);
 	}
 }

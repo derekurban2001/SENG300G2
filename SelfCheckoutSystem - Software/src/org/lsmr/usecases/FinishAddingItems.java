@@ -26,40 +26,12 @@ public class FinishAddingItems extends UseCases{
 	public ElectronicScaleListener scaleElectronicListener;
 	public BarcodeScannerListener barcodeScannerListener;
 	public TouchScreenListener touchScreenListener;
-	// Register the listeners in this constructor
-	//constructor
-		
-	public FinishAddingItems() {	      
-		 barcodeScannerListener =  new BarcodeScannerListener() {
-
-			@Override
-			public void enabled(AbstractDevice<? extends AbstractDeviceListener> device) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void disabled(AbstractDevice<? extends AbstractDeviceListener> device) {
-				
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void barcodeScanned(BarcodeScanner barcodeScanner, Barcode barcode) {
-				
-				// Disabling scanners. 
-				station.mainScanner.disable();
-				station.handheldScanner.disable();
-			}
-	    	 
-	     };
-	     station.mainScanner.register(barcodeScannerListener);
-		 station.handheldScanner.register(barcodeScannerListener);
-		 
-		 
-	}
 	
+	public void proceedToPayment () {
+		// Disabling scanners. 
+		station.mainScanner.disable();
+		station.handheldScanner.disable();
+	}
 
 	public void doneAddingItems(Barcode barcode) {
 		if (ProductDatabases.BARCODED_PRODUCT_DATABASE.containsKey(barcode))  {
