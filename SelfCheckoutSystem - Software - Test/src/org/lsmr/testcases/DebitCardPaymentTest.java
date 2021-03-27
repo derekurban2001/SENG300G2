@@ -5,10 +5,10 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.lsmr.selfcheckout.BlockedCardException;
 import org.lsmr.selfcheckout.Card;
 import org.lsmr.selfcheckout.ChipFailureException;
 import org.lsmr.selfcheckout.InvalidPINException;
@@ -140,14 +140,14 @@ public class DebitCardPaymentTest {
 	 */
 	@Test
 	public void testFailed2() throws IOException, DisabledException {
-		testUseCase.setAmountOwed(new BigDecimal(100));
+		testUseCase.setAmountOwed(new BigDecimal(20));
 		testBank.block("123");
 		
 		testUseCase.insertCard(testCard, "123", testBank);
 		testUseCase.tapCard(testCard, testBank);
 		testUseCase.swipeCard(testCard, testBank);
 		// invalid card no change
-		assertTrue(testUseCase.getAmountOwed().compareTo(new BigDecimal(100)) == 0);
+		assertTrue(testUseCase.getAmountOwed().compareTo(new BigDecimal(20)) == 0);
 	}
 	
 	/**
@@ -178,6 +178,78 @@ public class DebitCardPaymentTest {
 		testUseCase.tapCard(testCard, testBank);
 		// invalid card no change
 		assertTrue(testUseCase.getAmountOwed().compareTo(new BigDecimal(200)) == 0);
+	}
+	
+	/**
+	 * Insert blocked card
+	 * @throws IOException
+	 * @throws DisabledException 
+	 */
+	@Test (expected = BlockedCardException.class)
+	public void testFailed5() throws IOException, DisabledException {
+		testUseCase.setAmountOwed(new BigDecimal(100));
+		
+		// insert 3 time
+		for (int i = 0; i < 3; i++) {
+			try {
+				testUseCase.insertCard(testCard, "1234", testBank);
+			}
+			catch (Exception e){
+				testUseCase.removeCard();
+			}
+		}
+		
+		testUseCase.insertCard(testCard, "123", testBank);
+		// invalid card no change
+		assertTrue(testUseCase.getAmountOwed().compareTo(new BigDecimal(100)) == 0);
+	}
+	
+	/**
+	 * Tap blocked card
+	 * @throws IOException
+	 * @throws DisabledException 
+	 */
+	@Test (expected = BlockedCardException.class)
+	public void testFailed6() throws IOException, DisabledException {
+		testUseCase.setAmountOwed(new BigDecimal(100));
+		
+		// insert 3 time
+		for (int i = 0; i < 3; i++) {
+			try {
+				testUseCase.insertCard(testCard, "1234", testBank);
+			}
+			catch (Exception e){
+				testUseCase.removeCard();
+			}
+		}
+		
+		testUseCase.tapCard(testCard, testBank);
+		// invalid card no change
+		assertTrue(testUseCase.getAmountOwed().compareTo(new BigDecimal(100)) == 0);
+	}
+	
+	/**
+	 * Tap blocked card
+	 * @throws IOException
+	 * @throws DisabledException 
+	 */
+	@Test (expected = BlockedCardException.class)
+	public void testFailed7() throws IOException, DisabledException {
+		testUseCase.setAmountOwed(new BigDecimal(100));
+		
+		// insert 3 time
+		for (int i = 0; i < 3; i++) {
+			try {
+				testUseCase.insertCard(testCard, "1234", testBank);
+			}
+			catch (Exception e){
+				testUseCase.removeCard();
+			}
+		}
+		
+		testUseCase.swipeCard(testCard, testBank);
+		// invalid card no change
+		assertTrue(testUseCase.getAmountOwed().compareTo(new BigDecimal(100)) == 0);
 	}
 	
 	/**
@@ -236,23 +308,4 @@ public class DebitCardPaymentTest {
 		// invalid card no change
 		assertTrue(testUseCase.getAmountOwed().compareTo(new BigDecimal(0)) == 0);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }
