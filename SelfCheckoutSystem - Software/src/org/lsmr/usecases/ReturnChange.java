@@ -28,6 +28,7 @@ import org.lsmr.selfcheckout.devices.listeners.CoinTrayListener;
 
 public class ReturnChange {
 	
+	/* Global variables */
 	private boolean banknotePause = false;
 	private boolean coinPause = false;
 	private SelfCheckoutStation station;
@@ -38,6 +39,10 @@ public class ReturnChange {
 	private int[] banknoteDenominations;
 	private List<BigDecimal> coinDenominations;
 	
+	/*
+	 * Constructor that takes in an initialized SelfCheckoutStation and registers
+	 * listeners for ReturnChange.java. Also stores denominations in reverse order.
+	 */
 	public ReturnChange(SelfCheckoutStation station) {
 		if(station == null)
 			throw new SimulationException("Can't return change with null station");
@@ -55,6 +60,11 @@ public class ReturnChange {
 		coinDenominations = reverseOrder(station.coinDenominations);
 	}
 	
+	/*
+	 * Calculates the total change to be dispensed based off what bank notes/coins are available.
+	 * If change cannot be returned, throws a simulation exception. Rounds to nearest $0.05
+	 * (since pennies are discontinued). Then prints the change to be dispensed.
+	 */
 	public void calculateChange(double changeTotal) throws OverloadException{
 		if(changeTotal < 0)
 			throw new SimulationException("Can't calculate change with a negative number");
@@ -96,6 +106,10 @@ public class ReturnChange {
 		printChange(banknotesToReturn, coinsToReturn);
 	}
 	
+	/*
+	 * Releases one of the bank notes to be dispensed, will not release more until
+	 * dispensed bank note is taken
+	 */
 	public void releaseBanknoteChange() throws DisabledException{
 		ArrayList<Integer> toRemove = new ArrayList<Integer>();
 		for(Integer denomination : banknotesToReturn) {
@@ -116,6 +130,10 @@ public class ReturnChange {
 			banknotesToReturn.remove(banknote);
 	}
 	
+	/*
+	 * Releases the coins to be dispensed, stops releasing coins if the coin
+	 * tray is full.
+	 */
 	public void releaseCoinChange() throws DisabledException{
 		ArrayList<BigDecimal> toRemove = new ArrayList<BigDecimal>();
 		for(BigDecimal denomination : coinsToReturn) {
@@ -135,6 +153,9 @@ public class ReturnChange {
 			coinsToReturn.remove(coin);
 	}
 	
+	/*
+	 * This function takes the bank note from the slot (user action)
+	 */
 	public Banknote takeBanknote() {
 		Banknote banknote = station.banknoteOutput.removeDanglingBanknote();
 		if(banknote != null)
@@ -142,6 +163,9 @@ public class ReturnChange {
 		return banknote;
 	}
 	
+	/*
+	 * This function takes the coins from the coin tray (user action)
+	 */
 	public List<Coin> takeCoins() {
 		List<Coin> coins = station.coinTray.collectCoins();
 		
@@ -158,14 +182,23 @@ public class ReturnChange {
 		return fillList;
 	}
 	
+	/*
+	 * Returns the number of bank notes or coins waiting to be dispensed
+	 */
 	public int pendingChange() {
 		return coinsToReturn.size() + banknotesToReturn.size();
 	}
 	
+	/*
+	 * Rounds a given decimal to "places" number of digits
+	 */
 	private double round(double value, int places) {
 		return BigDecimal.valueOf(value).setScale(places, RoundingMode.HALF_UP).doubleValue();
 	}
 	
+	/*
+	 * Prints the total amount of change to be dispensed
+	 */
 	private void printChange(ArrayList<Integer> banknotesToReturn, ArrayList<BigDecimal> coinsToReturn) {
 		System.out.print("Banknote Change: ");
 		for(Integer denomination: banknotesToReturn)
@@ -178,6 +211,9 @@ public class ReturnChange {
 		System.out.println();
 	}
 	
+	/*
+	 * Creates the BanknoteSlotListener listener used by this software.
+	 */
 	private BanknoteSlotListener createBanknoteListener() {
 		return new BanknoteSlotListener() {
 
@@ -204,6 +240,9 @@ public class ReturnChange {
 		};
 	}
 	
+	/*
+	 * Creates the CoinTrayListener listener used by this software.
+	 */
 	private CoinTrayListener createCoinTrayListener() {
 		return new CoinTrayListener() {
 
@@ -220,6 +259,9 @@ public class ReturnChange {
 		};
 	}
 	
+	/*
+	 * Takes the given int[] array and returns a new array in reverse order
+	 */
 	private int[] reverseOrder(int[] array) {
 		int[] tempArray = new int[array.length];
 		int index = 0;
@@ -230,6 +272,9 @@ public class ReturnChange {
 		return tempArray;
 	}
 	
+	/*
+	 * Takes the given BigDecimal List and returns a List in reverse order
+	 */
 	private List<BigDecimal> reverseOrder(List<BigDecimal> array) {
 		List<BigDecimal> tempArray = new ArrayList<BigDecimal>(array);
 		tempArray.sort(Collections.reverseOrder());
