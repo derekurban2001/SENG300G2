@@ -73,21 +73,10 @@ public class FinishAddingItemsTest {
 	public void tearDown() throws Exception {
 	}
 
-	@Test
-	public final void testEnableDisable()
-	{
-		useCase = new FinishAddingItems();
-		
-		useCase.station.mainScanner.enable();
-		assertEquals(useCase.station.baggingArea.isDisabled(), false);
-		
-		useCase.station.mainScanner.disable();
-		assertEquals(useCase.station.mainScanner.isDisabled(), true);
-		
 	
-	}
 	@Test
 	public void testScannerDisabledAfterScan () {
+		useCase.proceedToPayment();
 		// Scanning item with main scanner, which should cause it to be disabled.
 		useCase.station.handheldScanner.scan(pickles);
 		
@@ -96,43 +85,26 @@ public class FinishAddingItemsTest {
 	}
 	
 	@Test
-    public final void TestCorrectTotalWeight1Item() throws OverloadException {
+    public final void TestCorrectTotalWeight1Item() {
 		useCase = new FinishAddingItems();
-		useCase.doneAddingItems(barcode);
-		useCase.station.mainScanner.scan(pickles);
-		useCase.station.mainScanner.scan(cheerios);
-		ItemPrice1 = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(pickles.getBarcode()).getPrice();
+	
+		ItemPrice1 = useCase.doneAddingItems(barcode);
 		useCase.updateCartTotal(ItemPrice1);
 
 		assertEquals(useCase.getCartTotal(), ItemPrice1);
 		
     }
 	@Test
-    public final void TestCorrectTotalWeight2Items() throws OverloadException {
+    public final void TestCorrectTotalWeight2Items() {
 		useCase = new FinishAddingItems();
-		useCase.station.mainScanner.scan(pickles);
-		useCase.station.mainScanner.scan(cheerios);
-		
 	
-		ItemPrice1 = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(pickles.getBarcode()).getPrice();
-		ItemPrice2 = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(cheerios.getBarcode()).getPrice();
+		ItemPrice1 = useCase.doneAddingItems(barcode);
+		ItemPrice2 = useCase.doneAddingItems(barcode);
 		ItemPrice3 = ItemPrice1.add(ItemPrice2);
 		useCase.updateCartTotal(ItemPrice3);
 		
 		assertEquals(useCase.getCartTotal(), ItemPrice3);
 		
     }
-	@Test
-    public final void TestIncorrectTotalWeight() throws OverloadException {
-		useCase = new FinishAddingItems();
-		useCase.doneAddingItems(barcode);
-		useCase.station.mainScanner.scan(pickles);
-		ItemPrice1 = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(pickles.getBarcode()).getPrice();
-		
 	
-		assertNotEquals(useCase.getBaggingAreaWeight(), ItemPrice1);
-		
-    }
-
-
 }
