@@ -27,19 +27,15 @@ public class FinishAddingItems extends UseCases{
 	public BarcodeScannerListener barcodeScannerListener;
 	public TouchScreenListener touchScreenListener;
 	
-	public void proceedToPayment () {
+	public void proceedToPayment() {
 		// Disabling scanners. 
 		station.mainScanner.disable();
 		station.handheldScanner.disable();
 	}
 
-	public void doneAddingItems(Barcode barcode) {
-		if (ProductDatabases.BARCODED_PRODUCT_DATABASE.containsKey(barcode))  {
-			barcodedProduct = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
-			itemPrice = barcodedProduct.getPrice();
-			
-			// call the parent payment class to pass the itemPrice 
-		}
+
+	public BigDecimal doneAddingItems(Barcode barcode) {
+		return getAmountOwed();
 	}
 }
 
