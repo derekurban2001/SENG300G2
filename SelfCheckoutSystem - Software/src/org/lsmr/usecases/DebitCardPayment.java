@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 
 import org.lsmr.selfcheckout.Card;
 import org.lsmr.selfcheckout.Card.CardData;
+import org.lsmr.selfcheckout.TapFailureException;
 import org.lsmr.selfcheckout.devices.AbstractDevice;
 import org.lsmr.selfcheckout.devices.CardReader;
 import org.lsmr.selfcheckout.devices.DisabledException;
@@ -15,17 +16,21 @@ import org.lsmr.selfcheckout.external.CardIssuer;
 public class DebitCardPayment extends UseCases{
 	CardIssuer bank;
 	CardReaderListener cardReaderListener;
-	boolean debug = true;
+	boolean debug = false;
 	
 	public DebitCardPayment() {
 		
 		cardReaderListener = new CardReaderListener() {
 
 			@Override
-			public void enabled(AbstractDevice<? extends AbstractDeviceListener> device) {}
+			public void enabled(AbstractDevice<? extends AbstractDeviceListener> device) {
+				if(debug) System.out.println("Card reader is disabled!");
+			}
 
 			@Override
-			public void disabled(AbstractDevice<? extends AbstractDeviceListener> device) {}
+			public void disabled(AbstractDevice<? extends AbstractDeviceListener> device) {
+				if(debug) System.out.println("Card reader is disabled!");
+			}
 
 			@Override
 			public void cardInserted(CardReader reader) {
@@ -52,7 +57,7 @@ public class DebitCardPayment extends UseCases{
 			public void cardDataRead(CardReader reader, CardData data) {
 				if(debug) System.out.println("Card's data has been read!");
 				
-				// if not debit then ignor
+				// if not debit card then ignore
 				if (data.getType() != "debit") {
 					if (debug) System.out.println("Invalid card!");
 				}
@@ -73,28 +78,26 @@ public class DebitCardPayment extends UseCases{
 		
 	}
 	
-	public void insertCard(Card card, String pin) throws DisabledException, IOException{
+	public void insertCard(Card card, String pin, CardIssuer bank) throws DisabledException, IOException{
+		this.bank = bank;
 		station.cardReader.insert(card, pin); 
 	}
 	
-	public void removeCard(Card card, String pin) throws DisabledException, IOException{
-		station.cardReader.insert(card, pin); 
+	public void removeCard(){
+		station.cardReader.remove(); 
 	}
 	
-	public void tapCard(Card card) throws IOException{
-		if (amountOwed.compareTo(new BigDecimal(100)) > 0)
-			System.out.println("Tap payment limit is 100");
-		else
-			station.cardReader.tap(card);
+	public void tapCard(Card card, CardIssuer bank) throws IOException, TapFailureException{
+		if (amountOwed.compareTo(new BigDecimal(100)) > 0) {
+			if (debug) System.out.println("Tap payment limit is 100");
+			throw new TapFailureException();
+		}
+		this.bank = bank;
+		station.cardReader.tap(card);
 	}
 	
-	public void swipeCard(Card card) throws IOException {
-		
+	public void swipeCard(Card card, CardIssuer bank) throws IOException {
+		this.bank = bank;
 		station.cardReader.swipe(card, null); 
 	}
-	
-	public void setCardIssuer(CardIssuer bank) {
-		this.bank = bank;
-	}
-
 }
