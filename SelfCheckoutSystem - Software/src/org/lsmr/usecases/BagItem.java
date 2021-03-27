@@ -9,7 +9,6 @@ import org.lsmr.selfcheckout.devices.listeners.ElectronicScaleListener;
 
 
 public class BagItem extends UseCases {
-
 	Item item;
 	double currentWeightInGrams;
 	int weightLimitInGrams;
@@ -19,45 +18,38 @@ public class BagItem extends UseCases {
 	public BarcodeScannerListener barcodeScannerListener;
 
 	// Register the listeners in this constructor
-	//constructor
-		
+	// Constructor
 	public BagItem() {
 		scaleElectronicListener =  new ElectronicScaleListener() {
 			@Override
 			public void enabled(AbstractDevice<? extends AbstractDeviceListener> device) {
 				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
 			public void disabled(AbstractDevice<? extends AbstractDeviceListener> device) {
 				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
-			public void weightChanged(ElectronicScale scale, double weightInGrams) 
-			{	
-				
+			public void weightChanged(ElectronicScale scale, double weightInGrams) {	
 				double currentWeight = getCurrentWeight();
 				double newWeight = getBaggingAreaWeight(); 
 				
-				
+				// The main and handheld scanners will only be enabled if the item was properly bagged (if the weight on the scale increases above the current weight).
 				if (newWeight > currentWeight) {
-		        	station.mainScanner.disable();
-					station.handheldScanner.disable();
+		        	station.mainScanner.enable();
+					station.handheldScanner.enable();
+					setItemBagged(true);
 		        }
-		        	        
 			}
 
 			@Override
-			public void overload(ElectronicScale scale)  
-			{										
+			public void overload(ElectronicScale scale)  {										
 			}
 
 			@Override
-			public void outOfOverload(ElectronicScale scale) 
-			{
+			public void outOfOverload(ElectronicScale scale) {
 			}
 			
 		};
@@ -71,10 +63,8 @@ public class BagItem extends UseCases {
      * Post-Condition: completed updating the bagging area scale for all items
      * @param item: Item to be placed in bagging area
      */
-	
 	public void bagItem (Item item) {
-        setCurrentItem(item);
-        setPuttingItemInBag(true);
+        setCurrentItem(item);			// not needed atm, but is here for use in future iterations
         station.baggingArea.add(item);
     }
 	
@@ -84,10 +74,8 @@ public class BagItem extends UseCases {
      * Post-Condition: completed updating the bagging area scale for all items
      * @param item: Item to be removed from the bagging
      */
-	public void removingBaggedItem (Item item) 
-	{       
-        setCurrentItem(item);
-        setPuttingItemInBag(false);
+	public void removingBaggedItem (Item item) {       
+        setCurrentItem(item);			// not needed atm, but is here for use in future iterations
         station.baggingArea.remove(item);
     }
 	
@@ -96,9 +84,7 @@ public class BagItem extends UseCases {
      * Pre-Condition: the item has been scanned and bagged 
      * Post-Condition: checked and completed updating the weight of the baggage for all items
      */
-	
-	public boolean correctBaggageWeight() 
-	{
+	public boolean correctBaggageWeight() {
 		//declaring variables 	
         double weight = getCurrentWeight();
         double baggingWeight = getBaggingAreaWeight();
@@ -118,5 +104,4 @@ public class BagItem extends UseCases {
         return false;
 
     }
-	
 }
