@@ -25,6 +25,9 @@ public class ReturnChangeTest {
 	int[] banknoteDenominations;
 	BigDecimal[] coinDenominations;
 	
+	/*
+	 * Sets up the SelfCheckoutStation used by the test class
+	 */
 	@Before
 	public final void setup() {
 		currency = Currency.getInstance(Locale.CANADA);
@@ -36,6 +39,9 @@ public class ReturnChangeTest {
 		this.station = new SelfCheckoutStation(currency, banknoteDenominations, coinDenominations, scaleMaximumWeight, scaleSensitivity);
 	}
 	
+	/*
+	 * Tests valid parameters of ReturnChange.java
+	 */
 	@Test
 	public final void testParameters() {
 		printHeader("testParameters");
@@ -54,6 +60,9 @@ public class ReturnChangeTest {
 		catch(OverloadException ex) {/*Do nothing*/}
 	}
 	
+	/*
+	 * Tests if there isn't enough coin change to return to customer
+	 */
 	@Test
 	public final void testCantReturnChange1() {
 		printHeader("testCantReturnChange1");
@@ -67,6 +76,9 @@ public class ReturnChangeTest {
 		catch(Exception ex) {};
 	}
 	
+	/*
+	 * Tests if there isn't enough banknote change to return to customer
+	 */
 	@Test
 	public final void testCantReturnChange2() {
 		printHeader("testCantReturnChange2");
@@ -79,6 +91,9 @@ public class ReturnChangeTest {
 		catch(Exception ex) {};
 	}
 	
+	/*
+	 * Tests if there no change is returned when change amount is 0
+	 */
 	@Test
 	public final void testChangeOfZero() {
 		printHeader("testChangeOfZero");
@@ -91,6 +106,57 @@ public class ReturnChangeTest {
 		assertEquals(0, change.pendingChange());
 	}
 	
+	/*
+	 * Tests if the proper amount of bank notes and coins is returned
+	 */
+	@Test
+	public final void testProperChange1() {
+		printHeader("testProperChange1");
+		ReturnChange change = new ReturnChange(station);
+		loadAllDispensers();
+		double sum = 0;
+		try {
+			change.calculateChange(17.48);
+			change.releaseCoinChange();
+			while(change.pendingChange() > 0) {
+				change.releaseBanknoteChange();
+				Banknote banknote = change.takeBanknote();
+				sum += banknote.getValue();
+			}
+			for(Coin coin : change.takeCoins())
+				sum += coin.getValue().doubleValue();
+		}
+		catch(Exception ex) {ex.printStackTrace(); fail(ex.toString());};
+		assertEquals(17.45, sum, 0.0001);
+	}
+	
+	/*
+	 * Tests if the proper amount of bank notes and coins is returned
+	 */
+	@Test
+	public final void testProperChange2() {
+		printHeader("testProperChange2");
+		ReturnChange change = new ReturnChange(station);
+		loadAllDispensers();
+		double sum = 0;
+		try {
+			change.calculateChange(878.69);
+			change.releaseCoinChange();
+			while(change.pendingChange() > 0) {
+				change.releaseBanknoteChange();
+				Banknote banknote = change.takeBanknote();
+				sum += banknote.getValue();
+			}
+			for(Coin coin : change.takeCoins())
+				sum += coin.getValue().doubleValue();
+		}
+		catch(Exception ex) {ex.printStackTrace(); fail(ex.toString());};
+		assertEquals(878.65, sum, 0.0001);
+	}
+	
+	/*
+	 * Tests if the proper amount of bank note change is returned
+	 */
 	@Test
 	public final void testBanknoteChange1() {
 		printHeader("testBanknoteChange1");
@@ -109,6 +175,9 @@ public class ReturnChangeTest {
 		catch(Exception ex) {ex.printStackTrace(); fail(ex.toString());}
 	}
 	
+	/*
+	 * Tests if the proper amount of bank note change is returned
+	 */
 	@Test
 	public final void testBanknoteChange2() {
 		printHeader("testBanknoteChange2");
@@ -128,6 +197,9 @@ public class ReturnChangeTest {
 		catch(Exception ex) {ex.printStackTrace(); fail(ex.toString());}
 	}
 	
+	/*
+	 * Tests if the proper amount of bank note change is returned
+	 */
 	@Test
 	public final void testBanknoteChange3() {
 		printHeader("testBanknoteChange3");
@@ -146,6 +218,9 @@ public class ReturnChangeTest {
 		catch(Exception ex) {ex.printStackTrace(); fail(ex.toString());}
 	}
 	
+	/*
+	 * Tests if the proper amount of coin change is returned
+	 */
 	@Test
 	public final void testCoinChange1() {
 		printHeader("testCoinChange1");
@@ -164,6 +239,9 @@ public class ReturnChangeTest {
 		catch(Exception ex) {ex.printStackTrace(); fail(ex.toString());}
 	}
 	
+	/*
+	 * Tests if the proper amount of coin change is returned
+	 */
 	@Test
 	public final void testCoinChange2() {
 		printHeader("testCoinChange2");
@@ -183,6 +261,9 @@ public class ReturnChangeTest {
 		catch(Exception ex) {ex.printStackTrace(); fail(ex.toString());}
 	}
 	
+	/*
+	 * Tests if the proper amount of coin change is returned
+	 */
 	@Test
 	public final void testCoinChange3() {
 		printHeader("testCoinChange3");
@@ -201,6 +282,9 @@ public class ReturnChangeTest {
 		catch(Exception ex) {ex.printStackTrace(); fail(ex.toString());}
 	}
 	
+	/*
+	 * Tests if the proper bank notes are returned
+	 */
 	@Test
 	public final void testCorrectBanknotes() {
 		printHeader("testCorrectBanknotes");
@@ -232,6 +316,9 @@ public class ReturnChangeTest {
 		catch(Exception ex) {ex.printStackTrace(); fail(ex.toString());}
 	}
 	
+	/*
+	 * Tests if the proper coins are returned
+	 */
 	@Test
 	public final void testCorrectCoins() {
 		printHeader("testCorrectCoins");
@@ -259,6 +346,9 @@ public class ReturnChangeTest {
 		catch(Exception ex) {ex.printStackTrace(); fail(ex.toString());}
 	}
 	
+	/*
+	 * Tests if the bank note return slot is full
+	 */
 	@Test
 	public final void testBanknoteSlotFull() {
 		printHeader("testBanknoteSlotFull");
@@ -275,6 +365,9 @@ public class ReturnChangeTest {
 		catch(Exception ex) {ex.printStackTrace(); fail(ex.toString());}
 	}
 
+	/*
+	 * Tests if the coin return tray is full
+	 */
 	@Test
 	public final void testCoinTrayFull() {
 		printHeader("testCoinTrayFull");
@@ -290,6 +383,9 @@ public class ReturnChangeTest {
 		catch(Exception ex) {ex.printStackTrace(); fail(ex.toString());}
 	}
 
+	/*
+	 * Tests if you try and take two banknotes when one is returned
+	 */
 	@Test
 	public final void testDoubleTakeBanknote() {
 		printHeader("testBanknoteSlotFull");
@@ -307,12 +403,18 @@ public class ReturnChangeTest {
 		catch(Exception ex) {ex.printStackTrace(); fail(ex.toString());}
 	}
 	
+	/*
+	 * Print header helper method
+	 */
 	private final void printHeader(String testName) {
 		System.out.println("\n\n******************************");
 		System.out.println("Running Test: "+testName);
 		System.out.println("******************************");
 	}
 	
+	/*
+	 * Loads the appropriate coin dispenser based of a valid denomination
+	 */
 	private final void loadDispenser(BigDecimal denomination){
 		int size = 25;
 		Coin[] coins = new Coin[size];
@@ -324,6 +426,9 @@ public class ReturnChangeTest {
 		catch(OverloadException ex) {/*Do nothing*/}
 	}
 	
+	/*
+	 * Loads the appropriate bank note dispenser based of a valid denomination
+	 */
 	private final void loadDispenser(int denomination){
 		int size = 25;
 		Banknote[] banknotes = new Banknote[size];
@@ -336,21 +441,33 @@ public class ReturnChangeTest {
 		catch(OverloadException ex) {/*Do nothing*/}
 	}
 	
+	/*
+	 * Loads all the valid coin dispensers
+	 */
 	private final void loadCoinDispensers() {
 		for(BigDecimal denomination : coinDenominations)
 			loadDispenser(denomination);
 	}
 	
+	/*
+	 * Loads all the valid bank note dispensers
+	 */
 	private final void loadBanknoteDispensers() {
 		for(int denomination : banknoteDenominations)
 			loadDispenser(denomination);
 	}
 	
+	/*
+	 * Loads all the dispensers
+	 */
 	private final void loadAllDispensers(){
 		loadCoinDispensers();
 		loadBanknoteDispensers();
 	}
 	
+	/*
+	 * Create Big Decimal helper class
+	 */
 	private final BigDecimal cBigDecimal(double value) {
 		return BigDecimal.valueOf(value);
 	}
