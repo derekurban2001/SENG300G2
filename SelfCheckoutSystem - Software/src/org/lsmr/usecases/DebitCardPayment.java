@@ -58,7 +58,7 @@ public class DebitCardPayment extends UseCases{
 				if(debug) System.out.println("Card's data has been read!");
 				
 				// if not debit card then ignore
-				if (data.getType() != "debit") {
+				if (data.getType() != "debit") { 
 					if (debug) System.out.println("Invalid card!");
 				}
 				else {
