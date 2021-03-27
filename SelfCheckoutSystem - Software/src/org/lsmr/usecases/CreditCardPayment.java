@@ -29,13 +29,13 @@ public class CreditCardPayment extends UseCases{
 
 			@Override
 			public void cardInserted(CardReader reader) {
-				if(debug) System.out.println("card has bee inserted!");
+				if(debug) System.out.println("card has been inserted!");
 				
 			}
 
 			@Override
 			public void cardRemoved(CardReader reader) {
-				if(debug) System.out.println("card has bee removed!");
+				if(debug) System.out.println("card has been removed!");
 				
 			}
 

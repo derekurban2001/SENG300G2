@@ -17,7 +17,7 @@ public class UseCases {
 	public double weightInGrams;
 	Item currentItem;
 	BigDecimal totalPrice;
-	boolean itemBagged;
+	boolean PuttingItemInBag;
 	boolean overloading;
 	public SelfCheckoutStation station;
 	
@@ -60,9 +60,9 @@ public class UseCases {
         this.currentItem = i;
     }
 	
-	// Set to true if the item has been bagged.
-	public void setItemBagged (boolean b) {
-       this.itemBagged = b;
+	// move currentItem to BagItem class if it isn't used by any other classes
+	public void setPuttingItemInBag (boolean p) {
+       this.PuttingItemInBag = p;
     }
   
 	public void updateNumberOfItems (int numItems) {
@@ -95,6 +95,10 @@ public class UseCases {
 		return totalPrice;
 		
 	}
+	public  BigDecimal getFinal(ArrayList<BarcodedProduct> productList) {
+		return totalPrice;
+	}	
+	
 	public Item getCurrentItem() {
         return currentItem;
     }
@@ -120,8 +124,8 @@ public class UseCases {
 		return weightInGrams;
 	}
 	
-	// Checking to see if the bagging status of the current item.
-    public boolean getItemBagged() {
-    	return itemBagged;
+	// **move currentItem to BagItem class if it isn't used by any other classes
+    public boolean getPuttingItemInBag() {
+    	return PuttingItemInBag;
     }
 }
