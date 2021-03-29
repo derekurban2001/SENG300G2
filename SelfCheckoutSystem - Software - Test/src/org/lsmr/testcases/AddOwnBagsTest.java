@@ -14,7 +14,8 @@ public class AddOwnBagsTest {
 	public void setUp() {
 		useCase = new AddOwnBags();
 		
-		// add bags to scale
+		// Adding bags to scale, but keeping the scale zeroed.
+		useCase.station.baggingArea.notifyWeightChanged();
 	}
 	
 	// Test ensures that both scanners are enabled after the bags are added to the bagging area.
@@ -22,6 +23,4 @@ public class AddOwnBagsTest {
 	public void testMainScannerDisabled() {
 		assertTrue("Both scanners should be enabled.", !useCase.station.mainScanner.isDisabled() && !useCase.station.handheldScanner.isDisabled());
 	}
-	
-	// T
 }
