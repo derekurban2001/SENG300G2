@@ -48,7 +48,9 @@ public class CustomerMembershipTest {
 		station = new SelfCheckoutStation(currency, banknoteDenominations, coinDenominations, scaleMaximumWeight, scaleSensitivity);
 	}
 	
-	
+	/**
+	 * Test the constructor that does not require a pin, card is null
+	 */
 	@Test
 	public void testConstructorOne() {
 		Card memberCard = null;
@@ -59,6 +61,9 @@ public class CustomerMembershipTest {
 		fail("Card is null and should throw a SimulationException");
 	}
 	
+	/**
+	 * Test the constructor that does not require a pin, station is null
+	 */
 	@Test
 	public void testConstructorTwo() {
 		station = null;
@@ -70,6 +75,9 @@ public class CustomerMembershipTest {
 		fail("Station is null and should throw a SimulationException");
 	}
 	
+	/**
+	 * Test the constructor that requires a pin, pin is null
+	 */
 	@Test
 	public void testConstructorThree() {
 		Card memberCard = new Card("Membership", "1234", "John Doe", "123", "1234", false, false);
@@ -81,6 +89,9 @@ public class CustomerMembershipTest {
 		fail("Pin is null and should throw a SimulationException");
 	}
 	
+	/**
+	 * Test the constructor that requires a pin, card is null
+	 */
 	@Test
 	public void testConstructorFour() {
 		Card memberCard = null;
@@ -92,6 +103,9 @@ public class CustomerMembershipTest {
 		fail("Card is null and should throw a SimulationException");
 	}
 	
+	/**
+	 * Test the constructor that requires a pin, station is null
+	 */
 	@Test
 	public void testConstructorFive() {
 		station = null;
@@ -114,7 +128,6 @@ public class CustomerMembershipTest {
 		} catch(SimulationException e) {return;}
 		fail("Expected SimulationException");
 	}
-	
 	
 	@Test
 	public void insertCardTestNoChip(){
@@ -201,12 +214,20 @@ public class CustomerMembershipTest {
 //		streamTeardown();
 //	}
 	
-	
+	/**
+	 * Method to set up the streams for the tests that rely on messages input/output
+	 * 
+	 * @param outStream ByteArrayOutputStream of the stream that is going out
+ 	 * @param inStream InputStream of the stream that is receiving 
+	 */
 	public void streamSetup(ByteArrayOutputStream outStream, InputStream inStream) {
 		System.setOut(new PrintStream(outStream));
 		System.setIn(inStream);
 	}
 	
+	/**
+	 * Method to restore the streams to the standard in/out streams
+	 */
 	@After
 	public void streamTeardown() {
 		System.setOut(standardOut);
