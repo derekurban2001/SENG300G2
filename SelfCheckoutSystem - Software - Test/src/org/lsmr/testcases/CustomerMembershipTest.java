@@ -190,7 +190,6 @@ public class CustomerMembershipTest {
 		System.setOut(new PrintStream(outStream));
 		System.setIn(inStream);
 		
-		
 		Card memberCard = new Card("Membership", "1234", "John Doe", "123", "1234", false, false);
 		CustomerMembership membership = new CustomerMembership(station, memberCard);
 		membership.enterMemberNum();
