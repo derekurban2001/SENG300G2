@@ -40,4 +40,10 @@ public class FinishAddingItems extends UseCases{
 		station.mainScanner.disable();
 		station.handheldScanner.disable();
 	}
+	
+	public void backToScanning() {
+		// Disabling scanners. 
+		station.mainScanner.enable();
+		station.handheldScanner.enable();
+	}
 }
