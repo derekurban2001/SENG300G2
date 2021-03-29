@@ -34,10 +34,11 @@ public class BagItem extends UseCases {
 			@Override
 			public void weightChanged(ElectronicScale scale, double weightInGrams) {	
 				double currentWeight = getCurrentWeight();
-				double newWeight = getBaggingAreaWeight(); 
+				double newWeight = getBaggingAreaWeight();
 				
-				// The main and handheld scanners will only be enabled if the item was properly bagged (if the weight on the scale increases above the current weight).
-				if (newWeight > currentWeight) {
+				// The main and handheld scanners will only be enabled if the item was properly bagged.
+				// The weight must increase by the weight of the current item.
+				if (newWeight > currentWeight && weightInGrams == item.getWeight()) {
 		        	station.mainScanner.enable();
 					station.handheldScanner.enable();
 					setItemBagged(true);
