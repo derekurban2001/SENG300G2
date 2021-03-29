@@ -13,8 +13,7 @@ import org.lsmr.selfcheckout.devices.SimulationException;
 import org.lsmr.selfcheckout.devices.listeners.AbstractDeviceListener;
 import org.lsmr.selfcheckout.devices.listeners.CardReaderListener;
 
-public class CustomerMembership{
-
+public class CustomerMembership {
 	private Card memberCard;
 	private String pin;
 	private SelfCheckoutStation station;
