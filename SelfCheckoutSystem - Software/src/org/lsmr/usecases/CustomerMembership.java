@@ -23,7 +23,12 @@ public class CustomerMembership{
 	public boolean cardInserted;
 	private CardData data;
 	
-	//constructor
+	/**
+	 * Constructor for the class
+	 * 
+	 * @param station SelfCheckoutStation that is currently being used
+	 * @param memberCard Card for the membership of the user
+	 */
 	public CustomerMembership(SelfCheckoutStation station, Card memberCard){
 		if(station == null) {
 			throw new SimulationException("Station is null");
@@ -36,6 +41,13 @@ public class CustomerMembership{
 		initListener();
 	}
 	
+	/**
+	 * Constructor for the class, includes pin for the memberCard
+	 * 
+	 * @param station SelfCheckoutStation that is currently being used
+	 * @param memberCard Card for the membership of the user
+	 * @param pin String of the pin for the memberCard
+	 */
 	public CustomerMembership(SelfCheckoutStation station, Card memberCard, String pin){
 		if(station == null) {
 			throw new SimulationException("Station is null");
@@ -51,6 +63,10 @@ public class CustomerMembership{
 		initListener();
 	}
 	
+	/**
+	 * Method to initialize the listeners
+	 * Changed the response for the methods to print messages
+	 */
 	private void initListener() {
 		station.cardReader.register(new CardReaderListener() {
 			public void enabled(AbstractDevice<? extends AbstractDeviceListener> device) {
@@ -91,34 +107,67 @@ public class CustomerMembership{
 		});
 	}
 	
+	/**
+	 * Method to check the card reader if disabled
+	 */
 	public void checkCardReader() {
 		if(this.station.cardReader.isDisabled()) {
 			throw new SimulationException("The card reader is disabled");
 		}
 	}
 	
+	/**
+	 * Method to insert the membership card
+	 * 
+	 * @param memberCard Card for the membership of the user
+	 * @param pin String for the pin of the membership card
+	 * @throws IOException 
+	 */
 	public void insertMemberCard(Card memberCard, String pin) throws IOException{
 		checkCardReader();
 		setData(station.cardReader.insert(memberCard, pin));
 	}
 	
+	/**
+	 * Method to tap membership card
+	 * 
+	 * @param memberCard Card for the membership of the user
+	 * @throws IOException
+	 */
 	public void tapMemberCard(Card memberCard) throws IOException{
 		checkCardReader();
 		setData(station.cardReader.tap(memberCard));
 	}
 	
+	/**
+	 * Method to swipe membership card
+	 * 
+	 * @param memberCard Card for the membership of the user
+	 * @param signature BufferedImage of the signature of the user
+	 * @throws IOException
+	 */
 	public void swipeMemberCard(Card memberCard, BufferedImage signature) throws IOException{
 		checkCardReader();
 		setData(station.cardReader.swipe(memberCard, signature));
 	}
 	
+	/**
+	 * Method that prompts the user to input their membership number by hand
+	 * Saves the membership number
+	 */
 	public void enterMemberNum() {
 		System.out.print("Please input membership number:");
 		if(sc.nextLine() == " ") {
 			System.out.println("That is not a valid membership number.");
 		}
+		else {
+			setMembershipID(sc.nextLine());
+		}
 	}
 	
+	/*
+	 * Getters and Setters 
+	 */
 	public void removeCard() {
 		station.cardReader.remove();
 		setCardInserted(false);
@@ -130,6 +179,14 @@ public class CustomerMembership{
 
 	public void setCardInserted(boolean cardInserted) {
 		this.cardInserted = cardInserted;
+	}
+
+	public String getMembershipID() {
+		return membershipID;
+	}
+
+	public void setMembershipID(String membershipID) {
+		this.membershipID = membershipID;
 	}
 
 	public CardData getData() {
