@@ -195,8 +195,4 @@ public class CustomerMembership {
 	public void setData(CardData data) {
 		this.data = data;
 	}
-
-
-	
-	
 }
