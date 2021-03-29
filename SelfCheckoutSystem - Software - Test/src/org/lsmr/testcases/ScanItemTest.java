@@ -23,9 +23,9 @@ public class ScanItemTest {
 	Barcode barcode;
 	BarcodedProduct barcodedProduct;
 	
-	// Setting up use case and items.
+	// Setting up use cases and items.
 	@Before
-	public void setUpItems() {
+	public void setUp() {
 		useCase = new ScanItem();
 		
 		// Creating 'cheerios' barcoded item.
@@ -70,7 +70,7 @@ public class ScanItemTest {
 		assertTrue("Pickles should appear in the cart.", picklesInCart);
 	}
 	
-	// Test ensures the both scanners are disabled after the main scanner scans an item.
+	// Test ensures that both scanners are disabled after the main scanner scans an item.
 	// Note: This test may fail on occasion due to the scanner simulating failed barcode scans.
 	@Test
 	public void testScannersDisabledAfterMainScan () {
@@ -81,7 +81,7 @@ public class ScanItemTest {
 		assertTrue("Both scanners should be disabled.", useCase.station.mainScanner.isDisabled() && useCase.station.handheldScanner.isDisabled());
 	}
 
-	// Test ensures the both scanners are disabled after the handheld scanner scans an item.
+	// Test ensures that both scanners are disabled after the handheld scanner scans an item.
 	// Note: This test may fail on occasion due to the scanner simulating failed barcode scans.
 	@Test
 	public void testScannerDisabledAfterScan () {
