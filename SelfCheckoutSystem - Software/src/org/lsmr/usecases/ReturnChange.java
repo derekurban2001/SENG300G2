@@ -1,12 +1,9 @@
 package org.lsmr.usecases;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +22,7 @@ import org.lsmr.selfcheckout.devices.SimulationException;
 import org.lsmr.selfcheckout.devices.listeners.AbstractDeviceListener;
 import org.lsmr.selfcheckout.devices.listeners.BanknoteSlotListener;
 import org.lsmr.selfcheckout.devices.listeners.CoinTrayListener;
+
 
 public class ReturnChange {
 	
@@ -100,7 +98,7 @@ public class ReturnChange {
 			}
 		}
 		
-		if(total >= 0.05)
+		if(total >= lowestDenomination())
 			throw new SimulationException("Cannot return change, please re-stock change dispensers!");
 		
 		printChange(banknotesToReturn, coinsToReturn);
@@ -235,7 +233,15 @@ public class ReturnChange {
 			@Override
 			public void banknoteRemoved(BanknoteSlot slot) {
 				System.out.println("Ejected Banknote Removed...");
-				banknotePause = false;
+				if(banknotePause) {
+					banknotePause = false;
+					try {
+						releaseBanknoteChange();
+					}
+					catch(DisabledException ex) {
+						throw new SimulationException("Can't release change, BanknoteSlot is disabled!");
+					}
+				}
 			}
 		};
 	}
@@ -279,5 +285,28 @@ public class ReturnChange {
 		List<BigDecimal> tempArray = new ArrayList<BigDecimal>(array);
 		tempArray.sort(Collections.reverseOrder());
 		return tempArray;
+	}
+	
+	/*
+	 * Returns the lowest denomination of the bank notes and the coins
+	 */
+	private double lowestDenomination() {
+		double lowestDenom = 0;
+		
+		if(banknoteDenominations.length != 0)
+			lowestDenom = banknoteDenominations[0];
+		
+		if(coinDenominations.size() != 0)
+			lowestDenom = coinDenominations.get(0).doubleValue();
+		
+		for(int denomination : banknoteDenominations)
+			if((double)denomination < lowestDenom)
+				lowestDenom = (double)denomination;
+		
+		for(BigDecimal denomination : coinDenominations)
+			if(denomination.doubleValue() < lowestDenom)
+				lowestDenom = denomination.doubleValue();
+		
+		return lowestDenom;
 	}
 }
