@@ -1,5 +1,6 @@
 package org.lsmr.usecases;
 
+
 import org.lsmr.selfcheckout.Coin;
 
 import java.io.IOException;
@@ -11,8 +12,11 @@ import org.lsmr.selfcheckout.devices.CardReader;
 import org.lsmr.selfcheckout.devices.DisabledException;
 import org.lsmr.selfcheckout.devices.listeners.AbstractDeviceListener;
 import org.lsmr.selfcheckout.devices.listeners.CardReaderListener;
+import org.lsmr.selfcheckout.external.CardIssuer;
 
 public class CreditCardPayment extends UseCases{
+	//test push
+	CardIssuer bank;
 	
 	CardReaderListener cardReaderListener;
 	boolean debug = false;
@@ -29,13 +33,13 @@ public class CreditCardPayment extends UseCases{
 
 			@Override
 			public void cardInserted(CardReader reader) {
-				if(debug) System.out.println("card has been inserted!");
+				if(debug) System.out.println("card has bee inserted!");
 				
 			}
 
 			@Override
 			public void cardRemoved(CardReader reader) {
-				if(debug) System.out.println("card has been removed!");
+				if(debug) System.out.println("card has bee removed!");
 				
 			}
 
@@ -53,7 +57,20 @@ public class CreditCardPayment extends UseCases{
 
 			@Override
 			public void cardDataRead(CardReader reader, CardData data) {
-				// TODO Auto-generated method stub
+				if (data.getType().toLowerCase().indexOf("debit") == -1) { 
+					if (debug) System.out.println("Invalid card!");
+				}
+				else {
+					// check account balance
+					if (bank.authorizeHold(data.getNumber(), amountOwed) != -1) {
+						// if hold not fail
+						amountOwed = BigDecimal.ZERO;
+						if (debug) System.out.println("Transaction successful!");
+					}
+					else {
+						if (debug) System.out.println("Transaction failed!");
+					}
+				}
 				
 			}};
 			
