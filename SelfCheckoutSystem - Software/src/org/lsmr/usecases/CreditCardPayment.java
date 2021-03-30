@@ -2,8 +2,11 @@ package org.lsmr.usecases;
 
 
 import org.lsmr.selfcheckout.Coin;
+import org.lsmr.selfcheckout.TapFailureException;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.math.BigDecimal;
 
 import org.lsmr.selfcheckout.Card;
 import org.lsmr.selfcheckout.Card.CardData;
@@ -81,11 +84,11 @@ public class CreditCardPayment extends UseCases{
 		
 	}
 	
-	public void insertCard(Card card, String pin, CardIssuer bank) throws DisabledException{
-		this.bank = bank
+	public void insertCard(Card card, String pin, CardIssuer bank) throws DisabledException, IOException{
+		this.bank = bank;
 		station.cardReader.insert(card, pin); 
 	}
-	public void tapCard(Card card,CardIssuer bank) throws IOException{
+	public void tapCard(Card card,CardIssuer bank) throws IOException,TapFailureException	 {
 		if (amountOwed.compareTo(new BigDecimal(100)) > 0) {
 			if (debug) System.out.println("Tap payment limit is 100");
 			throw new TapFailureException();
