@@ -7,7 +7,6 @@ import org.lsmr.selfcheckout.BarcodedItem;
 import org.lsmr.selfcheckout.external.ProductDatabases;
 import org.lsmr.usecases.ScanItem;
 import java.math.BigDecimal;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;

@@ -33,13 +33,11 @@ public class AddOwnBags extends UseCases {
 			@Override
 			public void overload(ElectronicScale scale) {
 				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
 			public void outOfOverload(ElectronicScale scale) {
 				// TODO Auto-generated method stub
-				
 			}
 		};
 		
@@ -52,11 +50,8 @@ public class AddOwnBags extends UseCases {
 	// Proceeding to scanning after bags have been added to the bagging area.
 	// Scanners should be enabled and listener should be disabled.
 	public void proceedToScanning() {
-		// If the bags have been added to the scale, then the scanners should be enabled and the listener should be deregistered.
-		if (bagsAdded) {
 		station.mainScanner.enable();
 		station.handheldScanner.enable();
 		station.baggingArea.deregister(electronicScaleListener);
-		}
 	}
 }

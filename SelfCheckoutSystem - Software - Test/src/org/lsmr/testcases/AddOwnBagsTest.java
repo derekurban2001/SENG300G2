@@ -1,8 +1,7 @@
 package org.lsmr.testcases;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.lsmr.selfcheckout.Item;
@@ -26,23 +25,40 @@ public class AddOwnBagsTest {
 		assertTrue("Both scanners should be disabled.", useCase.station.mainScanner.isDisabled() && useCase.station.handheldScanner.isDisabled());
 	}
 	
-	// Test ensures that both scanners are enabled after the bags are added to the bagging area.
+	// Test ensures that both scanners are enabled when proceeding to scanning.
 	@Test
 	public void testBothScannersEnabled() {
-		bag = new Bag(50.0);
-		useCase.station.baggingArea.add(bag);
+		useCase.proceedToScanning();
 		assertTrue("Both scanners should be enabled.", !useCase.station.mainScanner.isDisabled() && !useCase.station.handheldScanner.isDisabled());
 	}
 	
-	// Test covers enable and disable.
+	// Test ensures that the listener is deregistered when proceeding to scanning.
+	// It is important that the listener is deregistered because we don't want it to conflict with other listeners in other use cases.
 	@Test
-    public final void testEnableDisable() {
-        useCase.station.baggingArea.enable();
-        assertEquals(useCase.station.baggingArea.isDisabled(), false);
-        
-        useCase.station.baggingArea.disable();
-        assertEquals(useCase.station.baggingArea.isDisabled(), true);
-    }
+	public void testListenerDeregistered() {
+		// Proceeding to the scanning area so that the lister used to detect if the customer has added their bags to the bagging area gets deregistered.
+		useCase.proceedToScanning();
+		
+		// Adding a bag to the bagging area. Then bagsAdded in useCase should remain false, since the listener has been deregistered.
+		bag = new Bag(50.0);
+		useCase.station.baggingArea.add(bag);
+		
+		assertFalse("The listener should have been deregistered.", useCase.bagsAdded);
+	}
+	
+	// Test checks if the bag was added to the bagging area.
+	@Test
+	public void testBagsAdded() {
+		bag = new Bag(150.0);
+		useCase.station.baggingArea.add(bag);
+		assertTrue("Bag should have been added to the bagging area.", useCase.bagsAdded);
+	}
+	
+	// Test checks if bag was not added to the bagging area.
+	@Test
+	public void testBagsNotAdded() {
+		assertFalse("Bag should have been added to the bagging area.", useCase.bagsAdded);
+	}
 	
 	// Test for OverloadException (if over 30kg of bags are placed on scale; however, this scenario is very unlikely).
 	@Test (expected = OverloadException.class)
@@ -52,11 +68,8 @@ public class AddOwnBagsTest {
 		useCase.station.baggingArea.getCurrentWeight();
 	}
 	
-	// disable the scanners after a bag has been added to the bagging area
-		// at this point the listener should be deregistered and the scanners should be disabled
-	
+	// Class to create a bag that can be added to the bagging area.
 	public class Bag extends Item {
-		// ...
 		protected Bag(double weightInGrams) {
 			super(weightInGrams);
 			// TODO Auto-generated constructor stub

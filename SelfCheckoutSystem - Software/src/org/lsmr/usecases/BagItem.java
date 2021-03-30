@@ -27,7 +27,6 @@ public class BagItem extends UseCases {
 			public void weightChanged(ElectronicScale scale, double weightInGrams) {
 				// The main and handheld scanners will only be enabled if the item was properly bagged.
 				// The weight must increase by the weight of the current item.
-				
 				if (weightInGrams > getCurrentWeight() && weightInGrams == getCurrentWeight() + getCurrentItem().getWeight()) {
 		        	station.mainScanner.enable();
 					station.handheldScanner.enable();

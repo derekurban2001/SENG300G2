@@ -136,16 +136,6 @@ public class BagItemTest {
 		assertNotEquals(useCase.getCurrentWeight(), 5.0, 0);
 	}
 	
-	// Test covers enable and disable.
-	@Test
-    public final void testEnableDisable() {
-        useCase.station.baggingArea.enable();
-        assertEquals(useCase.station.baggingArea.isDisabled(), false);
-        
-        useCase.station.baggingArea.disable();
-        assertEquals(useCase.station.baggingArea.isDisabled(), true);
-    }
-	
 	// Rounding method.
 	public static double round (double value, int precision) {
 	    int scale = (int) Math.pow(10, precision);
