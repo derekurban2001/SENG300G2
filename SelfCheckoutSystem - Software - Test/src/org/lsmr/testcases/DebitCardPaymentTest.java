@@ -308,4 +308,18 @@ public class DebitCardPaymentTest {
 		// invalid card no change
 		assertTrue(testUseCase.getAmountOwed().compareTo(new BigDecimal(0)) == 0);
 	}
+	
+	/**
+	 * Valid tap payment
+	 * @throws IOException
+	 */
+	@Test 
+	public void testSuccesful5() throws IOException {
+		testUseCase.setAmountOwed(new BigDecimal(50));
+		testCard = new Card("RBC Debit", "123", "Mike Wazowski", "333", "123", true, true);
+		
+		testUseCase.tapCard(testCard, testBank);
+		// valid card, amountOwed = 0;
+		assertTrue(testUseCase.getAmountOwed().compareTo(new BigDecimal(0)) == 0);
+	}
 }

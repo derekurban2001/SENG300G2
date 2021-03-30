@@ -118,13 +118,16 @@ public class ReturnChangeTest {
 		try {
 			change.calculateChange(17.48);
 			change.releaseCoinChange();
+			change.releaseBanknoteChange();
 			while(change.pendingChange() > 0) {
-				change.releaseBanknoteChange();
 				Banknote banknote = change.takeBanknote();
 				sum += banknote.getValue();
 			}
 			for(Coin coin : change.takeCoins())
 				sum += coin.getValue().doubleValue();
+			
+			Banknote banknote = change.takeBanknote();
+			sum += banknote.getValue();
 		}
 		catch(Exception ex) {ex.printStackTrace(); fail(ex.toString());};
 		assertEquals(17.45, sum, 0.0001);
@@ -142,13 +145,16 @@ public class ReturnChangeTest {
 		try {
 			change.calculateChange(878.69);
 			change.releaseCoinChange();
+			change.releaseBanknoteChange();
 			while(change.pendingChange() > 0) {
-				change.releaseBanknoteChange();
 				Banknote banknote = change.takeBanknote();
 				sum += banknote.getValue();
 			}
 			for(Coin coin : change.takeCoins())
 				sum += coin.getValue().doubleValue();
+			
+			Banknote banknote = change.takeBanknote();
+			sum += banknote.getValue();
 		}
 		catch(Exception ex) {ex.printStackTrace(); fail(ex.toString());};
 		assertEquals(878.65, sum, 0.0001);
@@ -165,11 +171,14 @@ public class ReturnChangeTest {
 		int sum = 0;
 		try {
 			change.calculateChange(385.00);
+			change.releaseBanknoteChange();
 			while(change.pendingChange() > 0) {
-				change.releaseBanknoteChange();
 				Banknote banknote = change.takeBanknote();
 				sum += banknote.getValue();
 			}
+			Banknote banknote = change.takeBanknote();
+			sum += banknote.getValue();
+			
 			assertEquals(385, sum);
 		}
 		catch(Exception ex) {ex.printStackTrace(); fail(ex.toString());}
@@ -187,11 +196,14 @@ public class ReturnChangeTest {
 		int sum = 0;
 		try {
 			change.calculateChange(305.00);
+			change.releaseBanknoteChange();
 			while(change.pendingChange() > 0) {
-				change.releaseBanknoteChange();
 				Banknote banknote = change.takeBanknote();
 				sum += banknote.getValue();
 			}
+			Banknote banknote = change.takeBanknote();
+			sum += banknote.getValue();
+			
 			assertEquals(305, sum);
 		}
 		catch(Exception ex) {ex.printStackTrace(); fail(ex.toString());}
@@ -208,11 +220,14 @@ public class ReturnChangeTest {
 		int sum = 0;
 		try {
 			change.calculateChange(15.00);
+			change.releaseBanknoteChange();
 			while(change.pendingChange() > 0) {
-				change.releaseBanknoteChange();
 				Banknote banknote = change.takeBanknote();
 				sum += banknote.getValue();
 			}
+			Banknote banknote = change.takeBanknote();
+			sum += banknote.getValue();
+			
 			assertEquals(15, sum);
 		}
 		catch(Exception ex) {ex.printStackTrace(); fail(ex.toString());}
@@ -298,10 +313,11 @@ public class ReturnChangeTest {
 		
 		try {
 			change.calculateChange(185.00);
+			change.releaseBanknoteChange();
 			while(change.pendingChange() > 0) {
-				change.releaseBanknoteChange();
 				banknoteList.add(change.takeBanknote());
 			}
+			banknoteList.add(change.takeBanknote());
 			
 			for(Banknote banknote : banknoteList)
 				if(checkList.contains(Integer.valueOf(banknote.getValue()))){
@@ -384,21 +400,19 @@ public class ReturnChangeTest {
 	}
 
 	/*
-	 * Tests if you try and take two banknotes when one is returned
+	 * Tests if you try a banknote that's not been ejected
 	 */
 	@Test
-	public final void testDoubleTakeBanknote() {
-		printHeader("testBanknoteSlotFull");
+	public final void testTakeInvisibleBanknote() {
+		printHeader("testTakeInvisibleBanknote");
 		ReturnChange change = new ReturnChange(station);
 		loadAllDispensers();
 		try {
 			change.calculateChange(15.00);
 			
-			change.releaseBanknoteChange();
-			change.takeBanknote();
 			change.takeBanknote();
 			
-			assertEquals(1, change.pendingChange());
+			assertEquals(2, change.pendingChange());
 		}
 		catch(Exception ex) {ex.printStackTrace(); fail(ex.toString());}
 	}

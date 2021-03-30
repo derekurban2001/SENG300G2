@@ -56,9 +56,9 @@ public class DebitCardPayment extends UseCases{
 			@Override
 			public void cardDataRead(CardReader reader, CardData data) {
 				if(debug) System.out.println("Card's data has been read!");
-				
-				// if not debit card then ignore
-				if (data.getType() != "debit") { 
+			
+				// if card type does not include the word debit then ignore
+				if (data.getType().toLowerCase().indexOf("debit") == -1) { 
 					if (debug) System.out.println("Invalid card!");
 				}
 				else {
