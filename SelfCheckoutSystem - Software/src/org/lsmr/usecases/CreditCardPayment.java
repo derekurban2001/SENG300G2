@@ -85,7 +85,7 @@ public class CreditCardPayment extends UseCases{
 		this.bank = bank
 		station.cardReader.insert(card, pin); 
 	}
-	public void tapCard(Card card) throws IOException{
+	public void tapCard(Card card,CardIssuer bank) throws IOException{
 		if (amountOwed.compareTo(new BigDecimal(100)) > 0) {
 			if (debug) System.out.println("Tap payment limit is 100");
 			throw new TapFailureException();
