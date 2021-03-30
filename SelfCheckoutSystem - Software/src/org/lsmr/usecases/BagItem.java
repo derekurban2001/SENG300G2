@@ -8,7 +8,6 @@ import org.lsmr.selfcheckout.devices.listeners.BarcodeScannerListener;
 import org.lsmr.selfcheckout.devices.listeners.ElectronicScaleListener;
 
 public class BagItem extends UseCases {
-	Item item;
 	double currentWeightInGrams;
 	int weightLimitInGrams;
 	public int sensitivity;
@@ -16,8 +15,7 @@ public class BagItem extends UseCases {
 	public ElectronicScaleListener scaleElectronicListener;
 	public BarcodeScannerListener barcodeScannerListener;
 
-	// Register the listeners in this constructor
-	// Constructor
+	// Registering the listener for the electronic scale in this constructor.
 	public BagItem() {
 		scaleElectronicListener =  new ElectronicScaleListener() {
 			@Override
@@ -37,7 +35,7 @@ public class BagItem extends UseCases {
 				
 				// The main and handheld scanners will only be enabled if the item was properly bagged.
 				// The weight must increase by the weight of the current item.
-				if (newWeight > currentWeight && weightInGrams == item.getWeight()) {
+				if (newWeight > currentWeight && weightInGrams == getCurrentItem().getWeight()) {
 		        	station.mainScanner.enable();
 					station.handheldScanner.enable();
 					setItemBagged(true);
@@ -57,6 +55,7 @@ public class BagItem extends UseCases {
 		 station.mainScanner.register(barcodeScannerListener);
 	     station.handheldScanner.register(barcodeScannerListener);
 	}
+	
 	 /*
      * Placing all the item in the bagging area
      * Pre-Condition: still in  the customer process session not paying yet
@@ -64,7 +63,7 @@ public class BagItem extends UseCases {
      * @param item: Item to be placed in bagging area
      */
 	public void bagItem (Item item) {
-        setCurrentItem(item);			// not needed atm, but is here for use in future iterations
+        setCurrentItem(item);
         station.baggingArea.add(item);
     }
 	
