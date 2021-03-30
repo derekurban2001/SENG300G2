@@ -3,17 +3,12 @@ package org.lsmr.usecases;
 import org.lsmr.selfcheckout.Item;
 import org.lsmr.selfcheckout.devices.AbstractDevice;
 import org.lsmr.selfcheckout.devices.ElectronicScale;
+import org.lsmr.selfcheckout.devices.OverloadException;
 import org.lsmr.selfcheckout.devices.listeners.AbstractDeviceListener;
-import org.lsmr.selfcheckout.devices.listeners.BarcodeScannerListener;
 import org.lsmr.selfcheckout.devices.listeners.ElectronicScaleListener;
 
 public class BagItem extends UseCases {
-	double currentWeightInGrams;
-	int weightLimitInGrams;
-	public int sensitivity;
-	
 	public ElectronicScaleListener scaleElectronicListener;
-	public BarcodeScannerListener barcodeScannerListener;
 
 	// Registering the listener for the electronic scale in this constructor.
 	public BagItem() {
@@ -29,16 +24,16 @@ public class BagItem extends UseCases {
 			}
 
 			@Override
-			public void weightChanged(ElectronicScale scale, double weightInGrams) {	
-				double currentWeight = getCurrentWeight();
-				double newWeight = getBaggingAreaWeight();
-				
+			public void weightChanged(ElectronicScale scale, double weightInGrams) {
 				// The main and handheld scanners will only be enabled if the item was properly bagged.
 				// The weight must increase by the weight of the current item.
-				if (newWeight > currentWeight && weightInGrams == getCurrentItem().getWeight()) {
+				
+				if (weightInGrams > getCurrentWeight() && weightInGrams == getCurrentWeight() + getCurrentItem().getWeight()) {
 		        	station.mainScanner.enable();
 					station.handheldScanner.enable();
-					setItemBagged(true);
+					// setItemBagged(true);					// not used for this iteration, but may be used for iteration 3
+					setPreviousWeight(weightInGrams - getCurrentItem().getWeight());
+					setCurrentWeight(getCurrentWeight() + getCurrentItem().getWeight());
 		        }
 			}
 
@@ -49,11 +44,8 @@ public class BagItem extends UseCases {
 			@Override
 			public void outOfOverload(ElectronicScale scale) {
 			}
-			
 		};
 		 station.baggingArea.register(scaleElectronicListener);
-		 station.mainScanner.register(barcodeScannerListener);
-	     station.handheldScanner.register(barcodeScannerListener);
 	}
 	
 	 /*
@@ -83,24 +75,20 @@ public class BagItem extends UseCases {
      * Pre-Condition: the item has been scanned and bagged 
      * Post-Condition: checked and completed updating the weight of the baggage for all items
      */
-	public boolean correctBaggageWeight() {
-		//declaring variables 	
-        double weight = getCurrentWeight();
-        double baggingWeight = getBaggingAreaWeight();
+	public boolean correctBaggageWeight() throws OverloadException {
+		// Declaring variables.
+        double actualWeight = station.baggingArea.getCurrentWeight();
+        double expectedWeight = getCurrentWeight();
         
-        //find the difference between actual and expected weight
-		double differenceInValue = weight - baggingWeight;
-		// return false if they are not almost the same 
-		if (differenceInValue < station.baggingArea.getSensitivity()) 
-		{
-			if(differenceInValue > -station.baggingArea.getSensitivity()) 
-			{
-		        return true;
-			}
-			
+        // Find the difference between actual and expected weight.
+		double differenceInValue = actualWeight - expectedWeight;
+		
+		// Return true if the expected weight and the actual weight are approximately the same.
+		if (differenceInValue < station.baggingArea.getSensitivity() && differenceInValue > -station.baggingArea.getSensitivity()) {
+			return true;
 		}
-        //return false if OverloadException is called
+		
+        // Return false if the expected weight is not the same as the actual weight (shouldn't happen).
         return false;
-
     }
 }

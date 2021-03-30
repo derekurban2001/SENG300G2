@@ -110,7 +110,8 @@ public class ScanItemTest {
 			if (bp.getBarcode() == cheerios.getBarcode()) {
 				cheeriosInCart = true;
 			}
-			else if (bp.getBarcode() == pickles.getBarcode()) {
+			
+			if (bp.getBarcode() == pickles.getBarcode()) {
 				picklesInCart = true;
 			}
 		}

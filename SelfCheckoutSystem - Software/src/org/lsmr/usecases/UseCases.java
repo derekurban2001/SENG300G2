@@ -13,8 +13,8 @@ public class UseCases {
 	BigDecimal cartTotal = new BigDecimal(0.0);
 	BigDecimal amountOwed = new BigDecimal(0.0);
 	int numberOfItems = 0;
-	double baggingAreaWeight = 0.0;
-	public double weightInGrams;
+	public double previousWeight = 0.0;
+	public double currentWeight = 0.0;
 	Item currentItem;
 	BigDecimal totalPrice;
 	boolean itemBagged;
@@ -25,9 +25,10 @@ public class UseCases {
 		Currency currency = Currency.getInstance("CAD");
 		int[] banknoteDenominations = {5, 10, 20, 50, 100};
 		BigDecimal[] coinDenominations = {new BigDecimal(0.05), new BigDecimal(0.10), new BigDecimal(0.25), new BigDecimal(1.0), new BigDecimal(2.0)};
-		int scaleMax = 75;
+		int weightLimitInGrams = 30000;
 		int scaleSensitivity = 1;
-		station = new SelfCheckoutStation(currency, banknoteDenominations, coinDenominations, scaleMax, scaleSensitivity);
+		station = new SelfCheckoutStation(currency, banknoteDenominations, coinDenominations, weightLimitInGrams, scaleSensitivity);
+		
 	}
 	
 	// Setter methods.
@@ -55,12 +56,10 @@ public class UseCases {
 		this.numberOfItems = numItems;
 	}
 	
-	// Set currentItem.
 	public void setCurrentItem(Item i) {
         this.currentItem = i;
     }
 	
-	// Set itemBagged.
 	public void setItemBagged (boolean b) {
        this.itemBagged = b;
     }
@@ -69,24 +68,23 @@ public class UseCases {
 		this.numberOfItems += numItems;
 	}
 	
-	public void setBaggingAreaWeight (double weight) {
-		this.baggingAreaWeight = weight;
-	}
-	
-	public void updateBaggingAreaWeight (double weight) {
-		this.baggingAreaWeight += weight;
-	}
-	
 	public void setOverloading(boolean p) { 
-		overloading = p; 
+		this.overloading = p; 
 	}
 	
-	// if the bagging are is overload; no more weight can be added
+	public void setPreviousWeight (double weight) {
+		this.previousWeight = weight;
+	}
+	
+	public void setCurrentWeight (double weight) {
+		this.currentWeight = weight;
+	}
+	
+	// Getter methods.
     public boolean getOverloading() { 
     	return overloading; 
-
 	}
-	// Getter methods.
+    
 	public ArrayList<BarcodedProduct> getCart() {
 		return cart;
 	}
@@ -114,18 +112,15 @@ public class UseCases {
 		return numberOfItems;
 	}
 	
-	public double getBaggingAreaWeight() {
-        return baggingAreaWeight;
-    }
-	
-	
-	// **move currentItem to BagItem class if it isn't used by any other classes
-	public double getCurrentWeight() {
-		return weightInGrams;
+	public double getPreviousWeight() {
+		return previousWeight;
 	}
 	
-	// Get itemBagged.
     public boolean getItemBagged() {
     	return itemBagged;
+    }
+    
+    public double getCurrentWeight() {
+    	return currentWeight;
     }
 }

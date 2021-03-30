@@ -11,25 +11,21 @@ import org.lsmr.selfcheckout.devices.OverloadException;
 import org.lsmr.usecases.BagItem;
 
 public class BagItemTest {
-
 	Item item;
 	double currentWeightInGrams;
 	int weightLimitInGrams;
 	public int sensitivity;
-	
 	BagItem useCase;
 	
-	
+	// Setup for test cases.
 	@Before
-	public void setUpItems() {
+	public void setUp() {
 		useCase = new BagItem();
-		
 	}
 
-	// @Test to check that incorrect weight has been added to the bag 
+	// Test to check that incorrect weight has been added to the bag 
     @Test 
     public final void testBagItemIncorrect() throws OverloadException {
-        useCase = new BagItem();
         BarcodedItem item1 = new BarcodedItem(new Barcode("123"), 50.9);
         BarcodedItem item2 = new BarcodedItem(new Barcode("345"), 20.0);
         BarcodedItem item3 = new BarcodedItem(new Barcode("675"), 83.2);
@@ -38,62 +34,37 @@ public class BagItemTest {
 		useCase.bagItem(item2);
 		useCase.bagItem(item3);
 		
-        assertNotEquals(144.1, useCase.getBaggingAreaWeight(), 0);
+        assertNotEquals(144.1, useCase.station.baggingArea.getCurrentWeight(), 0);
         assertTrue(useCase.correctBaggageWeight());
 
     }
+  
     
-    
-	// @Test to check that correct weight has been added to the bag 
+	// Test to check that correct weight has been added to the bag.
 	@Test
 	public final void testBagItemCorrect() throws OverloadException {
-		useCase = new BagItem();
-		
-		BarcodedItem item1 = new BarcodedItem(new Barcode("123"), 50.9);		
-		BarcodedItem item2 = new BarcodedItem(new Barcode("345"), 20.0);	
-		BarcodedItem item3 = new BarcodedItem(new Barcode("675"), 83.2);	
-		
-		
+		BarcodedItem item1 = new BarcodedItem(new Barcode("123"), 50.9);
 		useCase.bagItem(item1);
-		double a = useCase.getCurrentWeight();
-		useCase.bagItem(item2);
-		double b = useCase.getCurrentWeight();
-		useCase.bagItem(item3);
-		double c = useCase.getCurrentWeight();
-		double sum = a + b + c;
 		
-		
-		assertEquals(sum, useCase.getBaggingAreaWeight(), 0);
-		assertTrue(useCase.correctBaggageWeight());
-		
+		assertEquals(item1.getWeight(), useCase.getCurrentItem().getWeight(), 0);
 	}
 	
-	// @Test to check if 1 item has been removed from the bag 
+	// Test to check if 1 item has been removed from the bag.
 	@Test
-	public final void testRemoveBaggedItem() 
-	{
-		useCase = new BagItem();
+	public final void testRemoveBaggedItem() throws OverloadException {
 		BarcodedItem item1 = new BarcodedItem(new Barcode("123"), 50.9);		
 		BarcodedItem item2 = new BarcodedItem(new Barcode("345"), 20.0);	
 	
 		useCase.bagItem(item1);
-		double a = useCase.getCurrentWeight();
 		useCase.bagItem(item2);
-		double b = useCase.getCurrentWeight();
-		double sum = a + b;
-		
-		assertEquals(useCase.getBaggingAreaWeight(),sum, 0);
 		useCase.removingBaggedItem(item2);
-		double removedSum = sum - a;
-		assertEquals(useCase.getBaggingAreaWeight(),removedSum, 0);
 		
-
+		assertEquals(useCase.station.baggingArea.getCurrentWeight(), round(useCase.getPreviousWeight(), 1), 0);
 	}
 	
-	// @Test to check if more than 1 item has been removed from the bag 
+	// Test to check if more than 1 item has been removed from the bag. 
 	@Test
-	public final void testRemoveMoreBaggedItem() 
-	{
+	public final void testRemoveMoreBaggedItem() throws OverloadException {
 		useCase = new BagItem();
 		BarcodedItem item1 = new BarcodedItem(new Barcode("123"), 50.9);		
 		BarcodedItem item2 = new BarcodedItem(new Barcode("345"), 20.0);	
@@ -102,45 +73,23 @@ public class BagItemTest {
 		BarcodedItem item5 = new BarcodedItem(new Barcode("871"), 10.3);
 		
 		useCase.bagItem(item1);
-		double a = useCase.getCurrentWeight();
 		useCase.bagItem(item2);
-		double b = useCase.getCurrentWeight();
 		useCase.bagItem(item3);
-		double c = useCase.getCurrentWeight();
 		useCase.bagItem(item4);
-		double d = useCase.getCurrentWeight();
 		useCase.bagItem(item5);
-		double e = useCase.getCurrentWeight();
+		double originalWeight = useCase.station.baggingArea.getCurrentWeight();
 		
-		double sum = a + b + c + d + e;
-		
-		assertEquals(useCase.getBaggingAreaWeight(),sum, 0);
 		useCase.removingBaggedItem(item1);
 		useCase.removingBaggedItem(item2);
-		useCase.removingBaggedItem(item4);
-		double removedSum = sum - a - b - d;
-		assertEquals(useCase.getBaggingAreaWeight(),removedSum, 0);
+		useCase.removingBaggedItem(item3);
+		double removedWeight = item1.getWeight() + item2.getWeight() + item3.getWeight();
 		
-
-	}
-	@Test
-	public final void testEnableDisable()
-	{
-		useCase = new BagItem();
-		useCase.station.baggingArea.enable();
-		assertEquals(useCase.station.baggingArea.isDisabled(), false);
-		
-		useCase.station.baggingArea.disable();
-		assertEquals(useCase.station.baggingArea.isDisabled(), true);
-		
-		
+		assertEquals(useCase.station.baggingArea.getCurrentWeight(), round(originalWeight - removedWeight, 1), 0);
 	}
 	
-	
-	// @ test to check the weighting of the baggage to see if it is correct
+	// Test to check the correctness of the weight of the bagging area.
 	@Test
-	public final void testCorrectBaggageWeight() throws OverloadException 
-	{
+	public void testCorrectBaggageWeight() throws OverloadException {
 		useCase = new BagItem();
 		BarcodedItem item1 = new BarcodedItem(new Barcode("123"), 50.9);		
 		BarcodedItem item2 = new BarcodedItem(new Barcode("345"), 20.0);	
@@ -148,48 +97,28 @@ public class BagItemTest {
 		BarcodedItem item4 = new BarcodedItem(new Barcode("675"), 10.4);
 		BarcodedItem item5 = new BarcodedItem(new Barcode("675"), 70.5);
 		BarcodedItem item6 = new BarcodedItem(new Barcode("675"), 61.5);
-		
 	
 		useCase.bagItem(item1);
-		double a = useCase.getCurrentWeight();
-		useCase.updateBaggingAreaWeight(a);
-		
 		useCase.bagItem(item2);
-		double b = useCase.getCurrentWeight();
 		useCase.bagItem(item3);
-		double c = useCase.getCurrentWeight();
 		useCase.bagItem(item4);
-		double d = useCase.getCurrentWeight();
 		useCase.bagItem(item5);
-		double e = useCase.getCurrentWeight();
 		useCase.bagItem(item6);
-		double f = useCase.getCurrentWeight();
 		
-		double sum = a + b + c + d + e + f;
-		assertEquals(useCase.getBaggingAreaWeight(),sum, 0);
 		assertTrue(useCase.correctBaggageWeight());
-		
 	}
 	
-	// test for overloadException 
-	@Test
-	public void testItemOverloadWeightException() {
-		useCase = new BagItem();
-		BarcodedItem item1 = new BarcodedItem(new Barcode("1234"), 12000000);
-		
+	// Test for OverloadException.
+	@Test (expected = OverloadException.class)
+	public void testItemOverloadWeightException() throws OverloadException {
+		BarcodedItem item1 = new BarcodedItem(new Barcode("1234"), 31000);
 		useCase.bagItem(item1);
-		double a = useCase.getCurrentWeight();
-		assertEquals(a, useCase.getBaggingAreaWeight(), 0);
-		assertNotEquals(useCase.getOverloading(), true);
-
+		useCase.station.baggingArea.getCurrentWeight();
 	}
 	
-	
-	// @ test to check the weighting of the baggage to see if it is incorrect
+	// Test to check the weighting of the baggage to see if it is incorrect.
 	@Test
-	public final void testInCorrectBaggageWeight() throws OverloadException 
-	{
-		useCase = new BagItem();
+	public final void testIncorrectBaggageWeight() {
 		BarcodedItem item1 = new BarcodedItem(new Barcode("123"), 50.9);		
 		BarcodedItem item2 = new BarcodedItem(new Barcode("345"), 20.0);	
 		BarcodedItem item3 = new BarcodedItem(new Barcode("675"), 83.2);	
@@ -204,10 +133,22 @@ public class BagItemTest {
 		useCase.bagItem(item5);
 		useCase.bagItem(item6);
 		
-		assertNotEquals(useCase.getBaggingAreaWeight(),5.0, 0);
-		assertTrue(useCase.correctBaggageWeight());
-		
+		assertNotEquals(useCase.getCurrentWeight(), 5.0, 0);
 	}
-
-
+	
+	// Test covers enable and disable.
+	@Test
+    public final void testEnableDisable() {
+        useCase.station.baggingArea.enable();
+        assertEquals(useCase.station.baggingArea.isDisabled(), false);
+        
+        useCase.station.baggingArea.disable();
+        assertEquals(useCase.station.baggingArea.isDisabled(), true);
+    }
+	
+	// Rounding method.
+	public static double round (double value, int precision) {
+	    int scale = (int) Math.pow(10, precision);
+	    return (double) Math.round(value * scale) / scale;
+	}
 }
