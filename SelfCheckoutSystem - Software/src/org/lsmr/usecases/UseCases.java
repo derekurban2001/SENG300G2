@@ -55,7 +55,7 @@ public class UseCases {
 		this.numberOfItems = numItems;
 	}
 	
-	// **move currentItem to BagItem class if it isn't used by any other classes
+	// Set currentItem.
 	public void setCurrentItem(Item i) {
         this.currentItem = i;
     }
