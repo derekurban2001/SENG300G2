@@ -63,7 +63,7 @@ public class CreditCardPayment extends UseCases{
 
 			@Override
 			public void cardDataRead(CardReader reader, CardData data) {
-				if (data.getType().toLowerCase().indexOf("debit") == -1) { 
+				if (data.getType().toLowerCase().indexOf("credit") == -1) { 
 					if (debug) System.out.println("Invalid card!");
 				}
 				else {
