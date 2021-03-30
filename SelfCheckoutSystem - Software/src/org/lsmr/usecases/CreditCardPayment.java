@@ -1,7 +1,6 @@
 package org.lsmr.usecases;
 
 
-import org.lsmr.selfcheckout.Coin;
 import org.lsmr.selfcheckout.TapFailureException;
 
 import java.awt.image.BufferedImage;
@@ -99,6 +98,10 @@ public class CreditCardPayment extends UseCases{
 	public void swipeCard(Card card,CardIssuer bank) throws IOException {
 		this.bank = bank;
 		station.cardReader.swipe(card, signature); 
+	}
+	
+	public void removeCard() {
+		station.cardReader.remove(); 
 	}
 
 }
