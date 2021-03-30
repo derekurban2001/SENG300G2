@@ -17,6 +17,9 @@ import org.lsmr.selfcheckout.external.CardIssuer;
 public class CreditCardPayment extends UseCases{
 	
 	CardIssuer bank;
+	String pin;
+	Card card;
+	BufferedImage signature = null;
 	
 	CardReaderListener cardReaderListener;
 	boolean debug = false;
@@ -45,13 +48,13 @@ public class CreditCardPayment extends UseCases{
 
 			@Override
 			public void cardTapped(CardReader reader) {
-				// TODO Auto-generated method stub
+				if (debug) System.out.println("card tapped");
 				
 			}
 
 			@Override
 			public void cardSwiped(CardReader reader) {
-				// TODO Auto-generated method stub
+				if (debug) System.out.println("card swiped");
 				
 			}
 
@@ -78,16 +81,20 @@ public class CreditCardPayment extends UseCases{
 		
 	}
 	
-	public void insertCard(Card card) throws DisabledException{
-		
+	public void insertCard(Card card, String pin, CardIssuer bank) throws DisabledException{
+		this.bank = bank
 		station.cardReader.insert(card, pin); 
 	}
 	public void tapCard(Card card) throws IOException{
-		
+		if (amountOwed.compareTo(new BigDecimal(100)) > 0) {
+			if (debug) System.out.println("Tap payment limit is 100");
+			throw new TapFailureException();
+		}
+		this.bank = bank;
 		station.cardReader.tap(card); 
 	}
-	public void swipeCard(Card card) throws IOException {
-		
+	public void swipeCard(Card card,CardIssuer bank) throws IOException {
+		this.bank = bank;
 		station.cardReader.swipe(card, signature); 
 	}
 
