@@ -7,7 +7,6 @@ import org.lsmr.selfcheckout.devices.listeners.AbstractDeviceListener;
 import org.lsmr.selfcheckout.devices.listeners.BarcodeScannerListener;
 import org.lsmr.selfcheckout.devices.listeners.ElectronicScaleListener;
 
-
 public class BagItem extends UseCases {
 	Item item;
 	double currentWeightInGrams;
