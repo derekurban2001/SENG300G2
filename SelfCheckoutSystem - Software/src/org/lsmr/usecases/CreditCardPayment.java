@@ -15,7 +15,7 @@ import org.lsmr.selfcheckout.devices.listeners.CardReaderListener;
 import org.lsmr.selfcheckout.external.CardIssuer;
 
 public class CreditCardPayment extends UseCases{
-	//test push
+	
 	CardIssuer bank;
 	
 	CardReaderListener cardReaderListener;
