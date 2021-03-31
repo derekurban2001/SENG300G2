@@ -31,7 +31,7 @@ public class FinishAddingItems extends UseCases{
 	// upon answering "YES" to go back to scanning, the scanners will be enabled
 	// and the customer can now go back to scanning
 	public void backToScanning() {
-		// Disabling scanners. 
+		// Enabling scanners. 
 		station.mainScanner.enable();
 		station.handheldScanner.enable();
 	}
