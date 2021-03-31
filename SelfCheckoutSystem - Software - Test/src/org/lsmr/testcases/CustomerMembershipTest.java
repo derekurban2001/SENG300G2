@@ -44,71 +44,22 @@ public class CustomerMembershipTest {
 		station = new SelfCheckoutStation(currency, banknoteDenominations, coinDenominations, scaleMaximumWeight, scaleSensitivity);
 	}
 	
-	/**
-	 * Test the constructor that does not require a pin, card is null
-	 */
-	@Test
-	public void testConstructorOne() {
-		Card memberCard = null;
-		try{
-			CustomerMembership membership = new CustomerMembership(station, memberCard);
-		}
-		catch(SimulationException e) {return;}
-		fail("Card is null and should throw a SimulationException");
-	}
-	
-	/**
-	 * Test the constructor that does not require a pin, station is null
-	 */
-	@Test
-	public void testConstructorTwo() {
-		station = null;
-		Card memberCard = new Card("Membership", "1234", "John Doe", "123", "1234", false, false);
-		try{
-			CustomerMembership membership = new CustomerMembership(station, memberCard);
-		}
-		catch(SimulationException e) {return;}
-		fail("Station is null and should throw a SimulationException");
-	}
-	
-	
-	@Test
-	public void cardReaderTest(){
-		Card memberCard = new Card("Membership", "1234", "John Doe", "123", "1234", false, false);
-		CustomerMembership membership = new CustomerMembership(station, memberCard);
-		station.cardReader.disable();
-		try{
-			membership.checkCardReader();
-		} catch(SimulationException e) {return;}
-		fail("Expected SimulationException");
-	}
-	
-	@Test
-	public void insertCardTestNoChip(){
-		Card memberCard = new Card("Membership", "1234", "John Doe", "123", "1234", false, false);
-		String pin = "1234";
-		CustomerMembership membership = new CustomerMembership(station, memberCard);
-		try{
-			membership.insertMemberCard(memberCard, pin);
-		} catch(IOException e) {return;}
-		fail("ChipFailureException expected");
-	}
-	
 	@Test
 	public void insertCardTest(){
 		Card memberCard = new Card("Membership", "1234", "John Doe", "123", "1234", false, true);
 		String pin = "1234";
-		CustomerMembership membership = new CustomerMembership(station, memberCard);
+		CustomerMembership membership = new CustomerMembership();
 		try{
 			membership.insertMemberCard(memberCard, pin);
 		} catch(IOException e) {return;}
+		
 	}
 	
 	@Test
 	public void swipeCardTest(){
 		Card memberCard = new Card("Membership", "1234", "John Doe", "123", "1234", false, false);
 		BufferedImage signature = null;
-		CustomerMembership membership = new CustomerMembership(station, memberCard);
+		CustomerMembership membership = new CustomerMembership();
 		try{
 			membership.swipeMemberCard(memberCard, signature);
 		} catch(IOException e) {return;}
@@ -118,7 +69,7 @@ public class CustomerMembershipTest {
 	@Test
 	public void tapCardTest() {
 		Card memberCard = new Card("Membership", "1234", "John Doe", "123", "1234", true, false);
-		CustomerMembership membership = new CustomerMembership(station, memberCard);
+		CustomerMembership membership = new CustomerMembership();
 		try {
 			membership.tapMemberCard(memberCard);
 		} catch (IOException e) {
@@ -130,7 +81,7 @@ public class CustomerMembershipTest {
 	@Test
 	public void removeTest() {
 		Card memberCard = new Card("Membership", "1234", "John Doe", "123", "1234", false, false);
-		CustomerMembership membership = new CustomerMembership(station, memberCard);
+		CustomerMembership membership = new CustomerMembership();
 		membership.removeCard();
 		assertEquals(false, membership.isCardInserted());
 	}
@@ -144,7 +95,7 @@ public class CustomerMembershipTest {
 		System.setIn(inStream);
 		
 		Card memberCard = new Card("Membership", "1234", "John Doe", "123", "1234", false, false);
-		CustomerMembership membership = new CustomerMembership(station, memberCard);
+		CustomerMembership membership = new CustomerMembership();
 		membership.enterMemberNum();
 		assertEquals("Please input membership number:", outStream.toString());
 		streamTeardown();
@@ -152,16 +103,22 @@ public class CustomerMembershipTest {
 	
 	@Test
 	public void memberInDatabaseTest() {
-		Card memberCard = new Card("Membership", "1234", "John Doe", "567", "8999", false, false);
-		CustomerMembership membership = new CustomerMembership(station, memberCard);
+		Card memberCard = new Card("Membership", "1234", "John Doe", "567", "8999", true, false);
+		CustomerMembership membership = new CustomerMembership();
 		membership.addMembership("1234");
+		try {
+			membership.tapMemberCard(memberCard);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		assertEquals(true, membership.verifyMember(membership.getData().getNumber()));
 	}
 	
 	@Test
 	public void addMembertoDatabase() {
 		Card memberCard = new Card("Membership", "1234", "John Doe", "567", "8999", false, false);
-		CustomerMembership membership = new CustomerMembership(station, memberCard);
+		CustomerMembership membership = new CustomerMembership();
 		membership.addMembership("1234");
 		assertEquals("1234", membership.memberDatabase.get(0));
 	}

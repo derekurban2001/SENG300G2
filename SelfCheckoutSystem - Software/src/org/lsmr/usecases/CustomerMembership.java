@@ -1,25 +1,18 @@
 package org.lsmr.usecases;
 
-import static org.junit.Assert.assertEquals;
-
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import org.junit.Test;
 import org.lsmr.selfcheckout.Card;
 import org.lsmr.selfcheckout.Card.CardData;
 import org.lsmr.selfcheckout.devices.AbstractDevice;
 import org.lsmr.selfcheckout.devices.CardReader;
-import org.lsmr.selfcheckout.devices.SelfCheckoutStation;
-import org.lsmr.selfcheckout.devices.SimulationException;
 import org.lsmr.selfcheckout.devices.listeners.AbstractDeviceListener;
 import org.lsmr.selfcheckout.devices.listeners.CardReaderListener;
 
-public class CustomerMembership {
-	private Card memberCard;
-	private SelfCheckoutStation station;
+public class CustomerMembership extends UseCases{
 	private String membershipID;
 	private Scanner sc = new Scanner(System.in);
 	public boolean cardInserted;
@@ -33,15 +26,8 @@ public class CustomerMembership {
 	 * @param station SelfCheckoutStation that is currently being used
 	 * @param memberCard Card for the membership of the user
 	 */
-	public CustomerMembership(SelfCheckoutStation station, Card memberCard){
-		if(station == null) {
-			throw new SimulationException("Station is null");
-		}
-		if(memberCard == null) {
-			throw new SimulationException("Card is null");
-		}
-		this.station = station;
-		this.memberCard = memberCard;
+	public CustomerMembership(){
+		memberDatabase = new ArrayList<String>();
 		initListener();
 	}
 	
@@ -102,14 +88,6 @@ public class CustomerMembership {
 		});
 	}
 	
-	/**
-	 * Method to check the card reader if disabled
-	 */
-	public void checkCardReader() {
-		if(this.station.cardReader.isDisabled()) {
-			throw new SimulationException("The card reader is disabled");
-		}
-	}
 	
 	/**
 	 * Method to insert the membership card
@@ -119,7 +97,6 @@ public class CustomerMembership {
 	 * @throws IOException 
 	 */
 	public void insertMemberCard(Card memberCard, String pin) throws IOException{
-		checkCardReader();
 		setData(station.cardReader.insert(memberCard, pin));
 	}
 	
@@ -130,7 +107,6 @@ public class CustomerMembership {
 	 * @throws IOException
 	 */
 	public void tapMemberCard(Card memberCard) throws IOException{
-		checkCardReader();
 		setData(station.cardReader.tap(memberCard));
 	}
 	
@@ -142,7 +118,6 @@ public class CustomerMembership {
 	 * @throws IOException
 	 */
 	public void swipeMemberCard(Card memberCard, BufferedImage signature) throws IOException{
-		checkCardReader();
 		setData(station.cardReader.swipe(memberCard, signature));
 	}
 	
@@ -169,6 +144,10 @@ public class CustomerMembership {
 		memberDatabase.add(newMember);
 	}
 	
+//	public void removeMembership
+	
+	
+	
 	/**
 	 * Method to verify if the member is in the database
 	 * @param member String of the member we are looking for
@@ -182,6 +161,7 @@ public class CustomerMembership {
 			return false;
 		}
 	}
+	
 	
 	/*
 	 * Getters and Setters 
