@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.lsmr.selfcheckout.Card;
 import org.lsmr.selfcheckout.ChipFailureException;
 import org.lsmr.selfcheckout.MagneticStripeFailureException;
+import org.lsmr.selfcheckout.TapFailureException;
 import org.lsmr.selfcheckout.devices.DisabledException;
 import org.lsmr.selfcheckout.devices.SimulationException;
 import org.lsmr.selfcheckout.external.CardIssuer;
@@ -74,10 +75,12 @@ public class CreditCardPaymentTest {
 		TestCreditCardPayment.setAmountOwed(new BigDecimal(50));
 		try{
 		TestCreditCardPayment.swipeCard(testCard, testBank);
+		assertTrue(TestCreditCardPayment.getAmountOwed().compareTo(new BigDecimal(0)) == 0);
 		}catch(MagneticStripeFailureException e)  {
 			System.out.println("MagneticStripeFailureException");
+			assertTrue(TestCreditCardPayment.getAmountOwed().compareTo(new BigDecimal(50)) == 0);
 		}
-		assertTrue(TestCreditCardPayment.getAmountOwed().compareTo(new BigDecimal(0)) == 0);			
+					
 	}
 
 	@Test 
@@ -247,9 +250,42 @@ public class CreditCardPaymentTest {
 	}
 	
 	
+	@Test (expected =  TapFailureException .class)
+	public void testTapOverLimit() throws IOException{
+		// Arrange
+		Calendar testCalendar = Calendar.getInstance();
+		testCalendar.set(Calendar.YEAR, 2030);
+		testCalendar.set(Calendar.MONTH, 3);
+		Card testCard = new Card("credit", "123321", "joy wang", "123", "321", true, true);
+		CardIssuer testBank = new CardIssuer("CIBC");
+		testBank.addCardData("123321", "joy wang", testCalendar, "123", new BigDecimal(300));
+		CreditCardPayment TestCreditCardPayment = new CreditCardPayment();
+		
+		// Act
+		TestCreditCardPayment.setAmountOwed(new BigDecimal(200));
+		TestCreditCardPayment.tapCard(testCard, testBank);
+		
+		assertTrue(TestCreditCardPayment.getAmountOwed().compareTo(new BigDecimal(200)) == 0);			
+	}
 	
-	
-	
+	@Test 
+	public void testInvalidCard() throws DisabledException, IOException{
+		// Arrange
+		Calendar testCalendar = Calendar.getInstance();
+		testCalendar.set(Calendar.YEAR, 2030);
+		testCalendar.set(Calendar.MONTH, 3);
+		Card testCard = new Card("debit", "123321", "joy wang", "123", "321", true, true);
+		CardIssuer testBank = new CardIssuer("CIBC");
+		testBank.addCardData("123321", "joy wang", testCalendar, "123", new BigDecimal(300));
+		CreditCardPayment TestCreditCardPayment = new CreditCardPayment();
+		
+		// Act
+		TestCreditCardPayment.setAmountOwed(new BigDecimal(50));
+		TestCreditCardPayment.tapCard(testCard, testBank);
+		
+		assertTrue(TestCreditCardPayment.getAmountOwed().compareTo(new BigDecimal(50)) == 0);			
+	}
+
 	
 	
 }

@@ -44,6 +44,7 @@ public class FinishAddingItemsTest {
 	public static void tearDownAfterClass() throws Exception {
 	}
 
+	// setting up the environment for the tests
 	@Before
 	public void setUp() throws Exception {
 		useCase = new FinishAddingItems();
@@ -74,6 +75,7 @@ public class FinishAddingItemsTest {
 	}
 
 	
+	// test to check of the scanners have been disabled after scanning
 	@Test
 	public void testScannerDisabledAfterScan () {
 		useCase.proceedToPayment();
@@ -84,6 +86,7 @@ public class FinishAddingItemsTest {
 		assertTrue("Both scanners should be disabled.", useCase.station.mainScanner.isDisabled() && useCase.station.handheldScanner.isDisabled());
 	}
 	
+	// test to check of the scanners have been enabled 
 	@Test
 	public void testScannerEnable() {
 		useCase.backToScanning();
@@ -93,6 +96,8 @@ public class FinishAddingItemsTest {
 		// Test will fail if either the main scanner or the handheld scanner is enabled.
 		assertFalse("Both scanners should be disabled.", useCase.station.mainScanner.isDisabled() && useCase.station.handheldScanner.isDisabled());
 	}
+	
+	// test to check if correct weight has been weighted if 1 item is added
 	@Test
     public final void TestCorrectTotalWeight1Item() {
 		useCase = new FinishAddingItems();
@@ -103,6 +108,8 @@ public class FinishAddingItemsTest {
 		assertEquals(useCase.getCartTotal(), ItemPrice1);
 		
     }
+	
+	// test to check if correct weight has been weighted if 2 item is added
 	@Test
     public final void TestCorrectTotalWeight2Items() {
 		useCase = new FinishAddingItems();

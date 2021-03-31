@@ -82,9 +82,7 @@ public class CustomerMembership extends UseCases{
 						if(debug) System.out.println("Member not found!");
 					}
 				}
-				
 			}
-			
 		});
 	}
 	
@@ -194,8 +192,4 @@ public class CustomerMembership extends UseCases{
 	public void setData(CardData data) {
 		this.data = data;
 	}
-	
-	
-
-	
 }
