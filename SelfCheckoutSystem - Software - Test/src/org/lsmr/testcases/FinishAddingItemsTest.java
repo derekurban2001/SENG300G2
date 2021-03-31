@@ -85,6 +85,15 @@ public class FinishAddingItemsTest {
 	}
 	
 	@Test
+	public void testScannerEnable() {
+		useCase.backToScanning();
+		// Scanning item with main scanner, which should cause it to be disabled.
+		useCase.station.handheldScanner.scan(pickles);
+		
+		// Test will fail if either the main scanner or the handheld scanner is enabled.
+		assertFalse("Both scanners should be disabled.", useCase.station.mainScanner.isDisabled() && useCase.station.handheldScanner.isDisabled());
+	}
+	@Test
     public final void TestCorrectTotalWeight1Item() {
 		useCase = new FinishAddingItems();
 	
