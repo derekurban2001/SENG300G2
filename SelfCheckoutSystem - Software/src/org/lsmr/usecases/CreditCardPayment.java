@@ -1,6 +1,7 @@
 package org.lsmr.usecases;
 
 
+import org.lsmr.selfcheckout.Coin;
 import org.lsmr.selfcheckout.TapFailureException;
 
 import java.awt.image.BufferedImage;
@@ -31,10 +32,14 @@ public class CreditCardPayment extends UseCases{
 		cardReaderListener = new CardReaderListener() {
 
 			@Override
-			public void enabled(AbstractDevice<? extends AbstractDeviceListener> device) {}
+			public void enabled(AbstractDevice<? extends AbstractDeviceListener> device) {
+				if(debug) System.out.println("card reader is enabled");
+			}
 
 			@Override
-			public void disabled(AbstractDevice<? extends AbstractDeviceListener> device) {}
+			public void disabled(AbstractDevice<? extends AbstractDeviceListener> device) {
+				if(debug) System.out.println("card reader is disabled!");
+			}
 
 			@Override
 			public void cardInserted(CardReader reader) {
