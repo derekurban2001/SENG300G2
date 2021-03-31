@@ -1,9 +1,13 @@
 package org.lsmr.usecases;
 
+import static org.junit.Assert.assertEquals;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
+import org.junit.Test;
 import org.lsmr.selfcheckout.Card;
 import org.lsmr.selfcheckout.Card.CardData;
 import org.lsmr.selfcheckout.devices.AbstractDevice;
@@ -15,12 +19,13 @@ import org.lsmr.selfcheckout.devices.listeners.CardReaderListener;
 
 public class CustomerMembership {
 	private Card memberCard;
-	private String pin;
 	private SelfCheckoutStation station;
 	private String membershipID;
 	private Scanner sc = new Scanner(System.in);
 	public boolean cardInserted;
 	private CardData data;
+	public ArrayList<String> memberDatabase;
+	private boolean debug = false;
 	
 	/**
 	 * Constructor for the class
@@ -41,28 +46,6 @@ public class CustomerMembership {
 	}
 	
 	/**
-	 * Constructor for the class, includes pin for the memberCard
-	 * 
-	 * @param station SelfCheckoutStation that is currently being used
-	 * @param memberCard Card for the membership of the user
-	 * @param pin String of the pin for the memberCard
-	 */
-	public CustomerMembership(SelfCheckoutStation station, Card memberCard, String pin){
-		if(station == null) {
-			throw new SimulationException("Station is null");
-		}
-		if(memberCard == null) {
-			throw new SimulationException("Card is null");
-		}
-		if (pin == null){
-			throw new SimulationException("Pin is null");
-		}
-		this.station = station;
-		this.memberCard = memberCard;
-		initListener();
-	}
-	
-	/**
 	 * Method to initialize the listeners
 	 * Changed the response for the methods to print messages
 	 */
@@ -76,31 +59,44 @@ public class CustomerMembership {
 			@Override
 			public void cardInserted(CardReader reader) {
 				// TODO Auto-generated method stub
-				System.out.println("Card has been inserted");
+				if(debug) System.out.println("Card has been inserted");
 			}
 
 			@Override
 			public void cardRemoved(CardReader reader) {
 				// TODO Auto-generated method stub
-				System.out.println("Card has been removed");
+				if(debug) System.out.println("Card has been removed");
 			}
 
 			@Override
 			public void cardTapped(CardReader reader) {
 				// TODO Auto-generated method stub
-				System.out.println("Card has been tapped");
+				if(debug) System.out.println("Card has been tapped");
 			}
 
 			@Override
 			public void cardSwiped(CardReader reader) {
 				// TODO Auto-generated method stub
-				System.out.println("Card has been swiped");
+				if(debug) System.out.println("Card has been swiped");
 			}
 
+			// how do I access this if they manually input it in?
 			@Override
 			public void cardDataRead(CardReader reader, CardData data) {
 				// TODO Auto-generated method stub
-				System.out.println("Card data has been read");
+				if(data.getType().toLowerCase().indexOf("membership") == -1) {
+					if(debug) System.out.println("Invalid type of card");
+				}
+				else {
+					// check if the member is in the database
+					if(verifyMember(data.getNumber())) {
+						if(debug) System.out.println("Member found!");
+					}
+					else {
+						if(debug) System.out.println("Member not found!");
+					}
+				}
+				
 			}
 			
 		});
@@ -152,15 +148,38 @@ public class CustomerMembership {
 	
 	/**
 	 * Method that prompts the user to input their membership number by hand
-	 * Saves the membership number
+	 * Saves the membership number regardless if it is null or not
 	 */
 	public void enterMemberNum() {
 		System.out.print("Please input membership number:");
-		if(sc.nextLine() == " ") {
-			System.out.println("That is not a valid membership number.");
+		setMembershipID(sc.nextLine());
+//		if(sc.nextLine() == null) {
+//			System.out.println("That is not a valid membership number.");
+//		}
+//		else {
+//			setMembershipID(sc.nextLine());
+//		}
+	}
+	
+	/**
+	 * Method to add a membership number into the membership database
+	 * @param newMember String of the new membership number
+	 */
+	public void addMembership(String newMember){
+		memberDatabase.add(newMember);
+	}
+	
+	/**
+	 * Method to verify if the member is in the database
+	 * @param member String of the member we are looking for
+	 * @return boolean which evaluates to true if the member is in the database
+	 */
+	public boolean verifyMember(String member) {
+		if(this.memberDatabase.contains(member)) {
+			return true;
 		}
 		else {
-			setMembershipID(sc.nextLine());
+			return false;
 		}
 	}
 	
@@ -195,4 +214,8 @@ public class CustomerMembership {
 	public void setData(CardData data) {
 		this.data = data;
 	}
+	
+	
+
+	
 }

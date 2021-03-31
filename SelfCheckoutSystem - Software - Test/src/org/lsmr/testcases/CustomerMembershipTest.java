@@ -71,48 +71,6 @@ public class CustomerMembershipTest {
 		fail("Station is null and should throw a SimulationException");
 	}
 	
-	/**
-	 * Test the constructor that requires a pin, pin is null
-	 */
-	@Test
-	public void testConstructorThree() {
-		Card memberCard = new Card("Membership", "1234", "John Doe", "123", "1234", false, false);
-		String pin = null;
-		try{
-			CustomerMembership membership = new CustomerMembership(station, memberCard, pin);
-		}
-		catch(SimulationException e) {return;}
-		fail("Pin is null and should throw a SimulationException");
-	}
-	
-	/**
-	 * Test the constructor that requires a pin, card is null
-	 */
-	@Test
-	public void testConstructorFour() {
-		Card memberCard = null;
-		String pin = "1234";
-		try{
-			CustomerMembership membership = new CustomerMembership(station, memberCard, pin);
-		}
-		catch(SimulationException e) {return;}
-		fail("Card is null and should throw a SimulationException");
-	}
-	
-	/**
-	 * Test the constructor that requires a pin, station is null
-	 */
-	@Test
-	public void testConstructorFive() {
-		station = null;
-		Card memberCard = new Card("Membership", "1234", "John Doe", "123", "1234", false, false);
-		String pin = "1234";
-		try{
-			CustomerMembership membership = new CustomerMembership(station, memberCard, pin);
-		}
-		catch(SimulationException e) {return;}
-		fail("Station is null and should throw a SimulationException");
-	}
 	
 	@Test
 	public void cardReaderTest(){
@@ -129,7 +87,7 @@ public class CustomerMembershipTest {
 	public void insertCardTestNoChip(){
 		Card memberCard = new Card("Membership", "1234", "John Doe", "123", "1234", false, false);
 		String pin = "1234";
-		CustomerMembership membership = new CustomerMembership(station, memberCard, pin);
+		CustomerMembership membership = new CustomerMembership(station, memberCard);
 		try{
 			membership.insertMemberCard(memberCard, pin);
 		} catch(IOException e) {return;}
@@ -140,11 +98,10 @@ public class CustomerMembershipTest {
 	public void insertCardTest(){
 		Card memberCard = new Card("Membership", "1234", "John Doe", "123", "1234", false, true);
 		String pin = "1234";
-		CustomerMembership membership = new CustomerMembership(station, memberCard, pin);
+		CustomerMembership membership = new CustomerMembership(station, memberCard);
 		try{
 			membership.insertMemberCard(memberCard, pin);
 		} catch(IOException e) {return;}
-
 	}
 	
 	@Test
@@ -193,9 +150,22 @@ public class CustomerMembershipTest {
 		streamTeardown();
 	}
 	
-	/*
-	 * little unsure how to properly implement this test, it does not get the latest output
-	 */
+	@Test
+	public void memberInDatabaseTest() {
+		Card memberCard = new Card("Membership", "1234", "John Doe", "567", "8999", false, false);
+		CustomerMembership membership = new CustomerMembership(station, memberCard);
+		membership.addMembership("1234");
+		assertEquals(true, membership.verifyMember(membership.getData().getNumber()));
+	}
+	
+	@Test
+	public void addMembertoDatabase() {
+		Card memberCard = new Card("Membership", "1234", "John Doe", "567", "8999", false, false);
+		CustomerMembership membership = new CustomerMembership(station, memberCard);
+		membership.addMembership("1234");
+		assertEquals("1234", membership.memberDatabase.get(0));
+	}
+//	
 //	@Test
 //	public void enterMemberNumTestTwo() {
 //		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
