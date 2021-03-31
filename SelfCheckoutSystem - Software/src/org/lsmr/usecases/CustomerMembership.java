@@ -96,9 +96,7 @@ public class CustomerMembership {
 						if(debug) System.out.println("Member not found!");
 					}
 				}
-				
 			}
-			
 		});
 	}
 	
@@ -214,8 +212,4 @@ public class CustomerMembership {
 	public void setData(CardData data) {
 		this.data = data;
 	}
-	
-	
-
-	
 }
