@@ -19,7 +19,7 @@ public class CustomerMembership extends UseCases{
 	private CardData data;
 	public ArrayList<String> memberDatabase;
 	private boolean debug = false;
-	CardReaderListener cardReaderListener;
+	public CardReaderListener cardReaderListener;
 	
 	/**
 	 * Constructor for the class
