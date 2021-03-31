@@ -1,5 +1,4 @@
 package org.lsmr.usecases;
-
 import java.math.BigDecimal;
 import org.lsmr.selfcheckout.Barcode;
 import org.lsmr.selfcheckout.Item;
@@ -29,6 +28,8 @@ public class FinishAddingItems extends UseCases{
 		station.handheldScanner.disable();
 	}
 	
+	// upon answering "YES" to go back to scanning, the scanners will be enabled
+	// and the customer can now go back to scanning
 	public void backToScanning() {
 		// Disabling scanners. 
 		station.mainScanner.enable();
