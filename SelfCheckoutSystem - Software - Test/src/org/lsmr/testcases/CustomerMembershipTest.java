@@ -1,6 +1,7 @@
 package org.lsmr.testcases;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.awt.image.BufferedImage;
@@ -72,10 +73,7 @@ public class CustomerMembershipTest {
 		CustomerMembership membership = new CustomerMembership();
 		try {
 			membership.tapMemberCard(memberCard);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} catch (IOException e) {return;}
 	}
 	
 	@Test
@@ -108,33 +106,44 @@ public class CustomerMembershipTest {
 		membership.addMembership("1234");
 		try {
 			membership.tapMemberCard(memberCard);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} catch (IOException e) {return;}
 		assertEquals(true, membership.verifyMember(membership.getData().getNumber()));
 	}
 	
 	@Test
 	public void addMembertoDatabase() {
-		Card memberCard = new Card("Membership", "1234", "John Doe", "567", "8999", false, false);
 		CustomerMembership membership = new CustomerMembership();
 		membership.addMembership("1234");
 		assertEquals("1234", membership.memberDatabase.get(0));
 	}
-//	
-//	@Test
-//	public void enterMemberNumTestTwo() {
-//		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-//		ByteArrayInputStream inStream = new ByteArrayInputStream(" ".getBytes());
-//		streamSetup(outStream, inStream);
-//		
-//		Card memberCard = new Card("Membership", "1234", "John Doe", "123", "1234", false, false);
-//		CustomerMembership membership = new CustomerMembership(station, memberCard);
-//		membership.enterMemberNum();
-//		assertEquals("That is not a valid membership number.", outStream.toString());
-//		streamTeardown();
-//	}
+
+	@Test
+	public void removeMemberFromDatabase() {
+		CustomerMembership membership = new CustomerMembership();
+		membership.addMembership("12345");
+		membership.addMembership("56789");
+		membership.addMembership("89999");
+		membership.removeMembership("56789");
+		assertEquals(false, membership.memberDatabase.contains("56789"));
+	}
+	
+	@Test
+    public final void testEnableDisable()
+    {
+        CustomerMembership membership = new CustomerMembership();
+        membership.station.cardReader.enable();
+        assertEquals(membership.station.baggingArea.isDisabled(), false);
+               
+    }
+	
+	@Test
+    public void testScannerEnable() {
+		CustomerMembership membership = new CustomerMembership();
+		membership.finishedMembershipScan();
+        // Test will fail if either the main scanner or the handheld scanner is enabled.
+        assertFalse("Both scanners should be enabled.", membership.station.mainScanner.isDisabled() && membership.station.handheldScanner.isDisabled());
+    }
+	
 	
 	/**
 	 * Method to set up the streams for the tests that rely on messages input/output

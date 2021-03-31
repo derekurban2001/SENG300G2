@@ -148,7 +148,16 @@ public class CustomerMembership extends UseCases{
 		memberDatabase.add(newMember);
 	}
 	
-//	public void removeMembership
+	public void removeMembership(String oldMember) {
+		int index = memberDatabase.indexOf(oldMember);
+		if(index == -1) {
+			if(debug) System.out.println("Could not find member in database");
+		}
+		else {
+			memberDatabase.remove(index);
+			if(debug) System.out.println("Member removed");
+		}
+	}
 	
 	
 	
