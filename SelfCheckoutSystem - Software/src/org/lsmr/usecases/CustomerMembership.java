@@ -19,6 +19,7 @@ public class CustomerMembership extends UseCases{
 	private CardData data;
 	public ArrayList<String> memberDatabase;
 	private boolean debug = false;
+	CardReaderListener cardReaderListener;
 	
 	/**
 	 * Constructor for the class
@@ -36,7 +37,7 @@ public class CustomerMembership extends UseCases{
 	 * Changed the response for the methods to print messages
 	 */
 	private void initListener() {
-		station.cardReader.register(new CardReaderListener() {
+		cardReaderListener = new CardReaderListener() {
 			public void enabled(AbstractDevice<? extends AbstractDeviceListener> device) {
 			}
 			public void disabled(AbstractDevice<? extends AbstractDeviceListener> device) {
@@ -83,7 +84,12 @@ public class CustomerMembership extends UseCases{
 					}
 				}
 			}
-		});
+		};
+		
+		// Disabling item scanners and registering listener.
+		station.cardReader.register(cardReaderListener);
+		station.mainScanner.disable();
+		station.handheldScanner.disable();
 	}
 	
 	
@@ -160,6 +166,12 @@ public class CustomerMembership extends UseCases{
 		}
 	}
 	
+	// Scanners should be enabled and listener should be disabled once the customer is finished with their membership card.
+	public void finishedMembershipScan() {
+		station.mainScanner.enable();
+		station.handheldScanner.enable();
+		station.cardReader.deregister(cardReaderListener);
+	}
 	
 	/*
 	 * Getters and Setters 
