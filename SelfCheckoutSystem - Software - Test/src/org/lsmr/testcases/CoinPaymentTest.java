@@ -27,7 +27,7 @@ public class CoinPaymentTest {
 			fail("Should not throw " + e);
 		}
 		// Assert
-		assertEquals(0,TestCoinPayment.getAmountOwed().compareTo(new BigDecimal(1.00)));	
+		assertEquals(1, TestCoinPayment.getAmountOwed().compareTo(new BigDecimal(1.00)));	
 	}
 	
 	@Test
