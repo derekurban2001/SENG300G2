@@ -132,12 +132,6 @@ public class CustomerMembership extends UseCases{
 	public void enterMemberNum() {
 		System.out.print("Please input membership number:");
 		setMembershipID(sc.nextLine());
-//		if(sc.nextLine() == null) {
-//			System.out.println("That is not a valid membership number.");
-//		}
-//		else {
-//			setMembershipID(sc.nextLine());
-//		}
 	}
 	
 	/**
@@ -198,10 +192,6 @@ public class CustomerMembership extends UseCases{
 
 	public void setCardInserted(boolean cardInserted) {
 		this.cardInserted = cardInserted;
-	}
-
-	public String getMembershipID() {
-		return membershipID;
 	}
 
 	public void setMembershipID(String membershipID) {
