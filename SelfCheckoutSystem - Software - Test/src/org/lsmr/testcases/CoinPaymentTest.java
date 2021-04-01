@@ -48,7 +48,7 @@ public class CoinPaymentTest {
 		assertEquals(0,TestCoinPayment.getAmountOwed().compareTo(new BigDecimal(4.00)));	
 	}
 	
-	@Test(expected = DisabledException.class)
+	@Test (expected = DisabledException.class)
 	public void testAmountOwedLowerThanZero() throws DisabledException  {
 		// Arrange
 		Coin TestCoin = new Coin(new BigDecimal(1.00), Currency.getInstance("CAD"));
