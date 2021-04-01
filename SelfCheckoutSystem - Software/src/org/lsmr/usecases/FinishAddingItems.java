@@ -1,6 +1,5 @@
 package org.lsmr.usecases;
 import java.math.BigDecimal;
-import org.lsmr.selfcheckout.Barcode;
 import org.lsmr.selfcheckout.Item;
 import org.lsmr.selfcheckout.devices.listeners.BarcodeScannerListener;
 import org.lsmr.selfcheckout.devices.listeners.ElectronicScaleListener;
