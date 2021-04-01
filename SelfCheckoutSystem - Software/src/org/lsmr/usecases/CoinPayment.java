@@ -61,7 +61,9 @@ public class CoinPayment extends UseCases {
 			if (amountOwed.compareTo(new BigDecimal(0)) <= 0) {
 				station.coinSlot.disable();
 				} else {
-				amountOwed = amountOwed.subtract(coinDenom);
+					if(station.coinStorage.hasSpace()) {
+						amountOwed = amountOwed.subtract(coinDenom);
+					}
 				}
 		}
 
