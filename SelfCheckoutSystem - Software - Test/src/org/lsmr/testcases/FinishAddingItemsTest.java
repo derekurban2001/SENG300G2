@@ -125,5 +125,23 @@ public class FinishAddingItemsTest {
 		
     }
 	
+	// test to check if correct weight has been weighted if more items are added
+    @Test
+    public final void TestCorrectTotalWeightMoreItems() {
+        useCase = new FinishAddingItems();
+
+        ItemPrice1 = useCase.doneAddingItems();
+        ItemPrice2 = useCase.doneAddingItems();
+        ItemPrice3 = useCase.doneAddingItems();
+        ItemPrice4 = useCase.doneAddingItems();
+
+        ItemPrice5 = ItemPrice1.add(ItemPrice2);
+        ItemPrice5 = ItemPrice5.add(ItemPrice3);
+        ItemPrice5 = ItemPrice5.add(ItemPrice4);
+        useCase.updateCartTotal(ItemPrice5);
+
+        assertEquals(useCase.getCartTotal(), ItemPrice5);
+
+    }
 	
 }
