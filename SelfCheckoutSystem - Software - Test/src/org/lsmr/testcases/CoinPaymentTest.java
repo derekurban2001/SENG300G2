@@ -206,4 +206,32 @@ public class CoinPaymentTest {
 		
 		assertTrue("Coin tray should be full.", !TestCoinPayment.station.coinTray.hasSpace());
 	}
+	
+	@Test
+	public void testCoinsFull() {
+		// Arrange
+		BigDecimal coinDenom = new BigDecimal(0.25);
+		Coin TestCoin = new Coin(coinDenom, Currency.getInstance("CAD"));
+		CoinPayment TestCoinPayment = new CoinPayment();
+		
+		// Act
+		TestCoinPayment.setAmountOwed(new BigDecimal(1000));
+		Coin[] TestCoinStorageList = new Coin[999];
+	    
+		for (int i = 0; i < TestCoinStorageList.length; i++ ) {
+	    	TestCoinStorageList[i] = new Coin(new BigDecimal(1), Currency.getInstance("CAD"));
+	    }
+		
+		// Test
+	    try {
+			TestCoinPayment.station.coinStorage.load(TestCoinStorageList);
+			TestCoinPayment.coinDenom = coinDenom;
+			TestCoinPayment.station.coinStorage.accept(TestCoin);
+			assertEquals(0, TestCoinPayment.getAmountOwed().compareTo(new BigDecimal(1000).subtract(coinDenom)));
+			assertTrue(TestCoinPayment.station.coinStorage.isDisabled());
+		} catch (DisabledException | SimulationException |OverloadException e) {
+			// TODO Auto-generated catch block
+			fail("Should not throw " + e);
+		}
+	}
 }

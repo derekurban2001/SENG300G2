@@ -23,7 +23,7 @@ public class CoinPayment extends UseCases {
 	CoinTrayListener coinTrayListener;
 	CoinValidatorListener coinValidatorListener;
 	boolean debug = false;
-	BigDecimal coinDenom;
+	public BigDecimal coinDenom;
 	
 	//to initialize all the device and listener
 	public CoinPayment() {
