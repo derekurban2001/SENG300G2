@@ -28,6 +28,7 @@ public class ReturnChange {
 	
 	/* Global variables */
 	private boolean banknotePause = false;
+	private boolean debug = false;
 	private boolean coinPause = false;
 	private SelfCheckoutStation station;
 	private ArrayList<BigDecimal> coinsToReturn = new ArrayList<BigDecimal>();
@@ -101,7 +102,8 @@ public class ReturnChange {
 		if(total >= lowestDenomination())
 			throw new SimulationException("Cannot return change, please re-stock change dispensers!");
 		
-		printChange(banknotesToReturn, coinsToReturn);
+		if(debug)
+			printChange(banknotesToReturn, coinsToReturn);
 	}
 	
 	/*
@@ -117,7 +119,8 @@ public class ReturnChange {
 					toRemove.add(denomination);
 				}
 				catch(OverloadException ex) {
-					System.out.println("Please remove banknote to collect rest of change.");
+					if(debug)
+						System.out.println("Please remove banknote to collect rest of change.");
 					banknotePause = true;
 				}
 				catch(EmptyException ex) {/*Shouldn't happen*/}
@@ -141,7 +144,8 @@ public class ReturnChange {
 					toRemove.add(denomination);
 				}
 				catch(OverloadException ex) {
-					System.out.println("Please empty coin tray to collect rest of change.");
+					if(debug)
+						System.out.println("Please empty coin tray to collect rest of change.");
 					coinPause = true;
 				}
 				catch(EmptyException ex) {/*Shouldn't happen*/}
@@ -157,7 +161,8 @@ public class ReturnChange {
 	public Banknote takeBanknote() {
 		Banknote banknote = station.banknoteOutput.removeDanglingBanknote();
 		if(banknote != null)
-			System.out.println("Taking $"+banknote.getValue()+" Ejected Banknote...\n");
+			if(debug)
+				System.out.println("Taking $"+banknote.getValue()+" Ejected Banknote...\n");
 		return banknote;
 	}
 	
@@ -172,7 +177,8 @@ public class ReturnChange {
 		for(Coin coin : coins) {
 			if(coin != null) {
 				fillList.add(coin);
-				System.out.println("Taking $"+coin.getValue()+" Coin from coin tray...");
+				if(debug)
+					System.out.println("Taking $"+coin.getValue()+" Coin from coin tray...");
 				coinPause = false;
 			}
 		}
@@ -226,13 +232,15 @@ public class ReturnChange {
 
 			@Override
 			public void banknoteEjected(BanknoteSlot slot) {
-				System.out.println("Ejecting Banknote...");
+				if(debug)
+					System.out.println("Ejecting Banknote...");
 				banknotePause = true;
 			}
 
 			@Override
 			public void banknoteRemoved(BanknoteSlot slot) {
-				System.out.println("Ejected Banknote Removed...");
+				if(debug)
+					System.out.println("Ejected Banknote Removed...");
 				if(banknotePause) {
 					banknotePause = false;
 					try {
@@ -260,7 +268,8 @@ public class ReturnChange {
 
 			@Override
 			public void coinAdded(CoinTray tray) {
-				System.out.println("Ejecting Coin...");
+				if(debug)
+					System.out.println("Ejecting Coin...");
 			}
 		};
 	}
@@ -308,5 +317,19 @@ public class ReturnChange {
 				lowestDenom = denomination.doubleValue();
 		
 		return lowestDenom;
+	}
+	
+	/*
+	 * Enables print statements for debugging
+	 */
+	public void enableDebugMode() {
+		debug = true;
+	}
+	
+	/*
+	 * Disables print statements for debugging
+	 */
+	public void disableDebugMode() {
+		debug = false;
 	}
 }

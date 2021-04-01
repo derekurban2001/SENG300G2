@@ -47,6 +47,7 @@ public class ReturnChangeTest {
 		printHeader("testParameters");
 		try {
 			ReturnChange change = new ReturnChange(null);
+			change.enableDebugMode();
 			fail("Expected SimulationException when constructor parameter is null");
 		}
 		catch(SimulationException ex){/*Do nothing*/}
@@ -67,6 +68,7 @@ public class ReturnChangeTest {
 	public final void testCantReturnChange1() {
 		printHeader("testCantReturnChange1");
 		ReturnChange change = new ReturnChange(station);
+		change.enableDebugMode();
 		loadDispenser(10);
 		loadDispenser(5);
 		try {
@@ -83,6 +85,7 @@ public class ReturnChangeTest {
 	public final void testCantReturnChange2() {
 		printHeader("testCantReturnChange2");
 		ReturnChange change = new ReturnChange(station);
+		change.enableDebugMode();
 		loadDispenser(BigDecimal.valueOf(0.25));
 		try {
 			change.calculateChange(5.10);
@@ -98,6 +101,7 @@ public class ReturnChangeTest {
 	public final void testChangeOfZero() {
 		printHeader("testChangeOfZero");
 		ReturnChange change = new ReturnChange(station);
+		change.enableDebugMode();
 		loadAllDispensers();
 		try {
 			change.calculateChange(0.0);
@@ -113,6 +117,7 @@ public class ReturnChangeTest {
 	public final void testProperChange1() {
 		printHeader("testProperChange1");
 		ReturnChange change = new ReturnChange(station);
+		change.enableDebugMode();
 		loadAllDispensers();
 		double sum = 0;
 		try {
@@ -140,6 +145,7 @@ public class ReturnChangeTest {
 	public final void testProperChange2() {
 		printHeader("testProperChange2");
 		ReturnChange change = new ReturnChange(station);
+		change.enableDebugMode();
 		loadAllDispensers();
 		double sum = 0;
 		try {
@@ -167,6 +173,7 @@ public class ReturnChangeTest {
 	public final void testBanknoteChange1() {
 		printHeader("testBanknoteChange1");
 		ReturnChange change = new ReturnChange(station);
+		change.enableDebugMode();
 		loadBanknoteDispensers();
 		int sum = 0;
 		try {
@@ -191,6 +198,7 @@ public class ReturnChangeTest {
 	public final void testBanknoteChange2() {
 		printHeader("testBanknoteChange2");
 		ReturnChange change = new ReturnChange(station);
+		change.enableDebugMode();
 		loadDispenser(5);
 		loadDispenser(100);
 		int sum = 0;
@@ -216,6 +224,7 @@ public class ReturnChangeTest {
 	public final void testBanknoteChange3() {
 		printHeader("testBanknoteChange3");
 		ReturnChange change = new ReturnChange(station);
+		change.enableDebugMode();
 		loadDispenser(5);
 		int sum = 0;
 		try {
@@ -240,6 +249,7 @@ public class ReturnChangeTest {
 	public final void testCoinChange1() {
 		printHeader("testCoinChange1");
 		ReturnChange change = new ReturnChange(station);
+		change.enableDebugMode();
 		loadDispenser(BigDecimal.valueOf(0.10));
 		double sum = 0;
 		try {
@@ -261,6 +271,7 @@ public class ReturnChangeTest {
 	public final void testCoinChange2() {
 		printHeader("testCoinChange2");
 		ReturnChange change = new ReturnChange(station);
+		change.enableDebugMode();
 		loadDispenser(BigDecimal.valueOf(0.05));
 		loadDispenser(BigDecimal.valueOf(0.25));
 		double sum = 0;
@@ -283,6 +294,7 @@ public class ReturnChangeTest {
 	public final void testCoinChange3() {
 		printHeader("testCoinChange3");
 		ReturnChange change = new ReturnChange(station);
+		change.enableDebugMode();
 		loadDispenser(BigDecimal.valueOf(0.10));
 		double sum = 0;
 		try {
@@ -304,6 +316,7 @@ public class ReturnChangeTest {
 	public final void testCorrectBanknotes() {
 		printHeader("testCorrectBanknotes");
 		ReturnChange change = new ReturnChange(station);
+		change.enableDebugMode();
 		ArrayList<Banknote> banknoteList = new ArrayList<Banknote>();
 		ArrayList<Integer> checkList = new ArrayList<Integer>(Arrays.asList(
 		50, 50, 50, 20, 5, 5, 5));
@@ -339,6 +352,7 @@ public class ReturnChangeTest {
 	public final void testCorrectCoins() {
 		printHeader("testCorrectCoins");
 		ReturnChange change = new ReturnChange(station);
+		change.enableDebugMode();
 		ArrayList<Double> checkList = new ArrayList<Double>(Arrays.asList(
 		1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.05));
 		loadDispenser(BigDecimal.valueOf(0.10));
@@ -369,6 +383,7 @@ public class ReturnChangeTest {
 	public final void testBanknoteSlotFull() {
 		printHeader("testBanknoteSlotFull");
 		ReturnChange change = new ReturnChange(station);
+		change.enableDebugMode();
 		loadAllDispensers();
 		try {
 			change.calculateChange(15.00);
@@ -388,6 +403,7 @@ public class ReturnChangeTest {
 	public final void testCoinTrayFull() {
 		printHeader("testCoinTrayFull");
 		ReturnChange change = new ReturnChange(station);
+		change.enableDebugMode();
 		loadCoinDispensers();
 		try {
 			change.calculateChange(50.00);
@@ -406,6 +422,7 @@ public class ReturnChangeTest {
 	public final void testTakeInvisibleBanknote() {
 		printHeader("testTakeInvisibleBanknote");
 		ReturnChange change = new ReturnChange(station);
+		change.enableDebugMode();
 		loadAllDispensers();
 		try {
 			change.calculateChange(15.00);
