@@ -57,6 +57,12 @@ public class CoinPayment extends UseCases {
 		public void validCoinDetected(CoinValidator validator, BigDecimal value) {
 			// TODO Auto-generated method stub
 			coinDenom = value;
+			
+			if (amountOwed.compareTo(new BigDecimal(0)) <= 0) {
+				station.coinSlot.disable();
+				} else {
+				amountOwed = amountOwed.subtract(coinDenom);
+				}
 		}
 
 		@Override
@@ -77,7 +83,6 @@ public class CoinPayment extends UseCases {
 
 		@Override
 		public void coinsFull(CoinStorageUnit unit) {
-
 			if(amountOwed.compareTo(new BigDecimal(0)) > 0) {amountOwed = amountOwed.subtract(coinDenom);}
 			station.coinStorage.disable();
 			if(debug) {System.out.println("coin storage is full!");}
@@ -86,11 +91,6 @@ public class CoinPayment extends UseCases {
 		@Override
 		public void coinAdded(CoinStorageUnit unit) {
 			// TODO Auto-generated method stub
-			if(amountOwed.compareTo(new BigDecimal(0)) <= 0) {
-				station.coinSlot.disable();
-				}else{
-				amountOwed = amountOwed.subtract(coinDenom);
-				}
 	}
 
 		@Override
