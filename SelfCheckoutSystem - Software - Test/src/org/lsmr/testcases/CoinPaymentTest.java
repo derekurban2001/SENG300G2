@@ -19,7 +19,7 @@ public class CoinPaymentTest {
 		// Arrange
 		Coin TestCoin = new Coin(new BigDecimal(1.00), Currency.getInstance("CAD"));
 		CoinPayment TestCoinPayment = new CoinPayment();
-		TestCoinPayment.setAmountOwed(new BigDecimal(2 ));
+		TestCoinPayment.setAmountOwed(new BigDecimal(2));
 		
 		try {
 			TestCoinPayment.insertCoin(TestCoin);
@@ -27,7 +27,7 @@ public class CoinPaymentTest {
 			fail("Should not throw " + e);
 		}
 		// Assert
-		assertEquals(1, TestCoinPayment.getAmountOwed().compareTo(new BigDecimal(1.00)));	
+		assertEquals(0,TestCoinPayment.getAmountOwed().compareTo(new BigDecimal(1.00)));	
 	}
 	
 	@Test
