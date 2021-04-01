@@ -25,7 +25,6 @@ import org.lsmr.selfcheckout.devices.listeners.CoinTrayListener;
 
 
 public class ReturnChange {
-	
 	/* Global variables */
 	private boolean banknotePause = false;
 	private boolean debug = false;
