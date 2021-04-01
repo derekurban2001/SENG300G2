@@ -59,10 +59,6 @@ public class CoinPaymentTest {
 		TestCoinPayment.insertCoin(TestCoin);
 		TestCoinPayment.insertCoin(TestCoin);
 	}
-	
-	
-	
-	
 
 	@Test (expected = DisabledException.class)
 	public void testCoinSlotDisable() throws DisabledException {
