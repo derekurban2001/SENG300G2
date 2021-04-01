@@ -85,9 +85,13 @@ public class CoinPayment extends UseCases {
 
 		@Override
 		public void coinsFull(CoinStorageUnit unit) {
-			if(amountOwed.compareTo(new BigDecimal(0)) > 0) {amountOwed = amountOwed.subtract(coinDenom);}
+			if(amountOwed.compareTo(new BigDecimal(0)) > 0) {
+				amountOwed = amountOwed.subtract(coinDenom);
+			}
 			station.coinStorage.disable();
-			if(debug) {System.out.println("coin storage is full!");}
+			if(debug) {
+				System.out.println("coin storage is full!");
+			}
 		}
 
 		@Override

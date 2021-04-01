@@ -45,7 +45,7 @@ public class CoinPaymentTest {
 			fail("Should not throw " + e);
 		}
 		// Assert
-		assertEquals(0,TestCoinPayment.getAmountOwed().compareTo(new BigDecimal(4.00)));	
+		assertEquals(0, TestCoinPayment.getAmountOwed().compareTo(new BigDecimal(4.00)));	
 	}
 	
 	@Test (expected = DisabledException.class)
@@ -98,6 +98,10 @@ public class CoinPaymentTest {
 		// Act
 		TestCoinPayment.station.coinStorage.disable();
 		TestCoinPayment.setAmountOwed(new BigDecimal(100));
+		
+		for(BigDecimal denomination: TestCoinPayment.station.coinDenominations) {
+            TestCoinPayment.station.coinDispensers.get(denomination).disable();
+		}
 		
 		// Inserting coin
 		TestCoinPayment.insertCoin(TestCoin);
