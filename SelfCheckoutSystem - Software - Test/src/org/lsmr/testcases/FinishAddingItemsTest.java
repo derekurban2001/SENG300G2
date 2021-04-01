@@ -31,6 +31,8 @@ public class FinishAddingItemsTest {
 	BigDecimal ItemPrice1;
 	BigDecimal ItemPrice2;
 	BigDecimal ItemPrice3;
+	BigDecimal ItemPrice4;
+	BigDecimal ItemPrice5;
 	double weight;
 	BigDecimal price;
 	Barcode barcode;
@@ -102,7 +104,7 @@ public class FinishAddingItemsTest {
     public final void TestCorrectTotalWeight1Item() {
 		useCase = new FinishAddingItems();
 	
-		ItemPrice1 = useCase.doneAddingItems(barcode);
+		ItemPrice1 = useCase.doneAddingItems();
 		useCase.updateCartTotal(ItemPrice1);
 
 		assertEquals(useCase.getCartTotal(), ItemPrice1);
@@ -114,13 +116,32 @@ public class FinishAddingItemsTest {
     public final void TestCorrectTotalWeight2Items() {
 		useCase = new FinishAddingItems();
 	
-		ItemPrice1 = useCase.doneAddingItems(barcode);
-		ItemPrice2 = useCase.doneAddingItems(barcode);
+		ItemPrice1 = useCase.doneAddingItems();
+		ItemPrice2 = useCase.doneAddingItems();
 		ItemPrice3 = ItemPrice1.add(ItemPrice2);
 		useCase.updateCartTotal(ItemPrice3);
 		
 		assertEquals(useCase.getCartTotal(), ItemPrice3);
 		
+    }
+	
+	// test to check if correct weight has been weighted if more item is added
+    @Test
+    public final void TestCorrectTotalWeightMoreItems() {
+        useCase = new FinishAddingItems();
+
+        ItemPrice1 = useCase.doneAddingItems();
+        ItemPrice2 = useCase.doneAddingItems();
+        ItemPrice3 = useCase.doneAddingItems();
+        ItemPrice4 = useCase.doneAddingItems();
+
+        ItemPrice5 = ItemPrice1.add(ItemPrice2);
+        ItemPrice5 = ItemPrice5.add(ItemPrice3);
+        ItemPrice5 = ItemPrice5.add(ItemPrice4);
+        useCase.updateCartTotal(ItemPrice5);
+
+        assertEquals(useCase.getCartTotal(), ItemPrice5);
+
     }
 	
 }
