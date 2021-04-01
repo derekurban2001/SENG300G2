@@ -28,6 +28,9 @@ public class CustomerMembershipTest {
 	private static PrintStream standardOut = System.out;
 	private static InputStream standardIn = System.in;
 	
+	/**
+	 * Sets up the station for the test cases
+	 */
 	@Before
 	public void setup() {
 		
@@ -45,6 +48,9 @@ public class CustomerMembershipTest {
 		station = new SelfCheckoutStation(currency, banknoteDenominations, coinDenominations, scaleMaximumWeight, scaleSensitivity);
 	}
 	
+	/**
+	 * Test to insert membership card correctly
+	 */
 	@Test
 	public void insertCardTest(){
 		Card memberCard = new Card("Membership", "1234", "John Doe", "123", "1234", false, true);
@@ -56,6 +62,9 @@ public class CustomerMembershipTest {
 		
 	}
 	
+	/**
+	 * Test to swipe membership card correctly
+	 */
 	@Test
 	public void swipeCardTest(){
 		Card memberCard = new Card("Membership", "1234", "John Doe", "123", "1234", false, false);
@@ -66,7 +75,9 @@ public class CustomerMembershipTest {
 		} catch(IOException e) {return;}
 	}
 	
-	
+	/**
+	 * Test to tap the membership card correctly
+	 */
 	@Test
 	public void tapCardTest() {
 		Card memberCard = new Card("Membership", "1234", "John Doe", "123", "1234", true, false);
@@ -76,6 +87,9 @@ public class CustomerMembershipTest {
 		} catch (IOException e) {return;}
 	}
 	
+	/**
+	 * Test to check if the membercard is properly removed
+	 */
 	@Test
 	public void removeTest() {
 		Card memberCard = new Card("Membership", "1234", "John Doe", "123", "1234", false, false);
@@ -84,6 +98,9 @@ public class CustomerMembershipTest {
 		assertEquals(false, membership.isCardInserted());
 	}
 	
+	/**
+	 * Test to check when user manually enters membership number
+	 */
 	@Test
 	public void enterMemberNumTest() {
 		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
@@ -99,6 +116,9 @@ public class CustomerMembershipTest {
 		streamTeardown();
 	}
 	
+	/**
+	 * Test to check if the member is in the databse
+	 */
 	@Test
 	public void memberInDatabaseTest() {
 		Card memberCard = new Card("Membership", "1234", "John Doe", "567", "8999", true, false);
@@ -110,6 +130,9 @@ public class CustomerMembershipTest {
 		assertEquals(true, membership.verifyMember(membership.getData().getNumber()));
 	}
 	
+	/**
+	 * Test to see if member is added to database correctly
+	 */
 	@Test
 	public void addMembertoDatabase() {
 		CustomerMembership membership = new CustomerMembership();
@@ -117,6 +140,9 @@ public class CustomerMembershipTest {
 		assertEquals("1234", membership.memberDatabase.get(0));
 	}
 
+	/**
+	 * Test to remove member from database
+	 */
 	@Test
 	public void removeMemberFromDatabase() {
 		CustomerMembership membership = new CustomerMembership();
@@ -126,16 +152,10 @@ public class CustomerMembershipTest {
 		membership.removeMembership("56789");
 		assertEquals(false, membership.memberDatabase.contains("56789"));
 	}
-	
-	@Test
-    public final void testEnableDisable()
-    {
-        CustomerMembership membership = new CustomerMembership();
-        membership.station.cardReader.enable();
-        assertEquals(membership.station.baggingArea.isDisabled(), false);
-               
-    }
-	
+
+	/**
+	 * Test to check if the scanners are enabled
+	 */
 	@Test
     public void testScannerEnable() {
 		CustomerMembership membership = new CustomerMembership();

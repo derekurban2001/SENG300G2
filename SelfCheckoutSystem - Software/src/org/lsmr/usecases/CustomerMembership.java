@@ -175,7 +175,9 @@ public class CustomerMembership extends UseCases{
 		}
 	}
 	
-	// Scanners should be enabled and listener should be disabled once the customer is finished with their membership card.
+	/**
+	 * Method to enable scanners and disable cardReaderListener after the member is done scanning
+	 */
 	public void finishedMembershipScan() {
 		station.mainScanner.enable();
 		station.handheldScanner.enable();
