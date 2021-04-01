@@ -7,7 +7,7 @@ import org.lsmr.selfcheckout.devices.listeners.ElectronicScaleListener;
 
 // The creation of this use case outlines what would happen if the customer presses the button on the screen indicating they would like to add their own bags.
 public class AddOwnBags extends UseCases {
-	public ElectronicScaleListener electronicScaleListener;
+	private ElectronicScaleListener electronicScaleListener;
 	public boolean bagsAdded = false;
 	
 	public AddOwnBags () {

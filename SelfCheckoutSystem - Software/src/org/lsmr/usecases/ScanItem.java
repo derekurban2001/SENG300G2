@@ -10,9 +10,9 @@ import org.lsmr.selfcheckout.external.ProductDatabases;
 import org.lsmr.selfcheckout.products.BarcodedProduct;
 
 public class ScanItem extends UseCases {
-	BigDecimal itemPrice;
-	BarcodedProduct barcodedProduct;
-	BarcodeScannerListener listener;
+	private BigDecimal itemPrice;
+	private BarcodedProduct barcodedProduct;
+	private BarcodeScannerListener listener;
 	
 	public ScanItem() {
 		listener = new BarcodeScannerListener() {
