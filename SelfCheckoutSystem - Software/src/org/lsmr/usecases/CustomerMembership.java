@@ -193,7 +193,7 @@ public class CustomerMembership extends UseCases{
 	public void setCardInserted(boolean cardInserted) {
 		this.cardInserted = cardInserted;
 	}
-
+	
 	public void setMembershipID(String membershipID) {
 		this.membershipID = membershipID;
 	}
