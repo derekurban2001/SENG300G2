@@ -131,7 +131,6 @@ public class CoinPayment extends UseCases {
 	
 	
 	public void insertCoin(Coin coin) throws DisabledException{
-		
 		station.coinSlot.accept(coin);
 	}
 	
