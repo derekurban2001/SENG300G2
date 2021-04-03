@@ -40,6 +40,7 @@ public class CustomerMembership extends UseCases{
 		cardReaderListener = new CardReaderListener() {
 			public void enabled(AbstractDevice<? extends AbstractDeviceListener> device) {
 			}
+			
 			public void disabled(AbstractDevice<? extends AbstractDeviceListener> device) {
 			}
 
@@ -91,7 +92,6 @@ public class CustomerMembership extends UseCases{
 		station.mainScanner.disable();
 		station.handheldScanner.disable();
 	}
-	
 	
 	/**
 	 * Method to insert the membership card
